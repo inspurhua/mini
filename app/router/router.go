@@ -19,12 +19,16 @@ func NewRouter() *gin.Engine {
 	_api.Use(middleware.JWTAuth())
 	{
 		//刷新token
-		_api.POST("/refresh", api.Refresh)
-
-	}
-	_api.Use(middleware.JWTAuth(), middleware.Auth())
-	{
-		_api.POST("/file", api.Refresh)
+		_api.GET("/refresh", api.Refresh)
+		_auth := _api.Group("auth")
+		_auth.Use(middleware.Auth())
+		{
+			_api.GET("/role", api.RoleList)
+			_api.POST("/role", api.RoleCreate)
+			_api.DELETE("/role/:id", api.RoleDelete)
+			_api.PUT("/role/:id", api.RoleUpdate)
+			_api.GET("/role/:id", api.RoleRead)
+		}
 	}
 
 	return r

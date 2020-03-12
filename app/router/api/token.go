@@ -10,26 +10,24 @@ import (
 	"time"
 )
 
-type LoginRequest struct {
+type LoginForm struct {
 	Account  string `form:"account" json:"account" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required,gte=6"`
 }
 
 func Login(c *gin.Context) {
 	var err error
-	var req LoginRequest
+	var req LoginForm
 
 	err = c.ShouldBind(&req)
 	if err != nil {
-		c.JSON(200, util.NewResultErrorOfClient(err))
-		c.Abort()
+		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
 
-	u := dao.Login(req.Account, req.Password)
-	if u.ID == 0 {
-		c.JSON(200, util.NewResultErrorOfClient(errors.New("账号或者密码错误,请重试")))
-		c.Abort()
+	u, err := dao.Login(req.Account, req.Password)
+	if err != nil || u.ID == 0 {
+		util.AbortNewResultErrorOfClient(c, errors.New("账号或者密码错误,请重试"+err.Error()))
 		return
 	}
 
@@ -52,15 +50,14 @@ func Refresh(c *gin.Context) {
 	if token, ok := c.Get("token"); ok {
 		new, err := jwt.RefreshToken(token.(string))
 		if err != nil {
-			c.JSON(200, util.NewResultErrorOfClient(errors.New("无法刷新得到新的token")))
-			c.Abort()
+			util.AbortNewResultErrorOfClient(c, errors.New("无法刷新得到新的token"))
 			return
 		}
 		expire := time.Now().Add(2 * time.Hour).Unix()
 		c.JSON(200, util.NewResultOKofRead(gin.H{"AccessToken": new, "Expire": expire}, 1))
+		return
 	}
-	c.JSON(200, util.NewResultErrorOfClient(errors.New("未提供token")))
-	c.Abort()
+	util.AbortNewResultErrorOfClient(c, errors.New("未提供token"))
 	return
 
 }

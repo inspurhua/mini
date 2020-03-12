@@ -1,5 +1,7 @@
 package util
 
+import "github.com/gin-gonic/gin"
+
 type Result struct {
 	Code  int         `json:"code"`
 	Msg   string      `json:"msg"`
@@ -31,19 +33,20 @@ func NewResultError(Code int, Msg error, Data interface{}, Count int) *Result {
 	}
 }
 
-func NewResultErrorOfClient(err error) *Result {
-	return &Result{
+func AbortNewResultErrorOfClient(c *gin.Context, err error) {
+	c.AbortWithStatusJSON(200, Result{
 		Code:  400,
 		Msg:   err.Error(),
 		Data:  nil,
 		Count: 0,
-	}
+	})
 }
-func NewResultErrorOfServer(err error) *Result {
-	return &Result{
+
+func AbortNewResultErrorOfServer(c *gin.Context, err error) {
+	c.AbortWithStatusJSON(200, Result{
 		Code:  500,
 		Msg:   err.Error(),
 		Data:  nil,
 		Count: 0,
-	}
+	})
 }

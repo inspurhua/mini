@@ -33,8 +33,8 @@ type User struct {
 func (User) TableName() string {
 	return config.Prefix + "user"
 }
-func Login(account, password string) (u User) {
-	db.Model(&User{}).Where("account=$1 and password=md5($2)", account,
-		config.JwtSecret+password).First(&u)
+func Login(account, password string) (u User, err error) {
+	err = db.Model(&User{}).Where("account=$1 and password=md5($2) and status=1", account,
+		config.JwtSecret+password).First(&u).Error
 	return
 }

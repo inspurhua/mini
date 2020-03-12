@@ -27,8 +27,7 @@ create table sys_role
 (
     id     bigserial primary key,
     name   text,
-    status integer default 1,
-    url    text
+    status integer default 1
 );
 
 create table sys_entry
