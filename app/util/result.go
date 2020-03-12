@@ -24,14 +24,14 @@ func NewResultOK(Msg string, Data interface{}, Count int) *Result {
 	}
 }
 
-func NewResultError(Code int, Msg error, Data interface{}, Count int) *Result {
-	return &Result{
-		Code:  Code,
-		Msg:   Msg.Error(),
-		Data:  Data,
-		Count: Count,
-	}
-}
+//func NewResultError(Code int, Msg error, Data interface{}, Count int) *Result {
+//	return &Result{
+//		Code:  Code,
+//		Msg:   Msg.Error(),
+//		Data:  Data,
+//		Count: Count,
+//	}
+//}
 
 func AbortNewResultErrorOfClient(c *gin.Context, err error) {
 	c.AbortWithStatusJSON(200, Result{

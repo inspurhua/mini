@@ -6,7 +6,7 @@ create table sys_user
     password  text    not null,
     role_id   integer not null,
     org_id    integer not null,
-    status    integer                     default 0,
+    status    integer                     default 1,--1有效2无效
     real_name text    null,
     code      text    null,
     position  text    null,
@@ -14,8 +14,8 @@ create table sys_user
     tel       text    null,
     avatar    text    null,
     address   text    null,
-    gender    integer                     default 1,
-    state     integer                     default 1,
+    gender    integer                     default 1,--1男2女
+    state     integer                     default 1,--1在职2离职
     note      text    null,
     open_id   text    null,
     create_at timestamp without time zone default localtimestamp(0),
@@ -27,17 +27,19 @@ create table sys_role
 (
     id     bigserial primary key,
     name   text,
-    status integer default 1
+    status integer default 1 --1有效,2无效
 );
 
 create table sys_entry
 (
-    id      bigserial primary key,
-    name    text,
-    code    text,
-    pid     integer,
-    is_menu integer default 1,
-    url     text
+    id     bigserial primary key,
+    title  text,
+    pid    integer,
+    type   integer default 1,--1菜单2功能
+    url    text,
+    icon   text,
+    target text    default '_self',
+    sort   int
 );
 
 create table sys_auth
@@ -76,7 +78,7 @@ create table sys_log
     data      text,
     ip        text,
     ua        text,
-    is_login  integer                     default 0,
+    method    text,
     create_at timestamp without time zone default localtimestamp(0)
 );
 

@@ -1,6 +1,9 @@
 package util
 
-import "reflect"
+import (
+	"huage.tech/mini/app/bean"
+	"reflect"
+)
 
 func StructToMap(obj interface{}) map[string]interface{} {
 	obj1 := reflect.TypeOf(obj)
@@ -11,4 +14,19 @@ func StructToMap(obj interface{}) map[string]interface{} {
 		data[obj1.Field(i).Name] = obj2.Field(i).Interface()
 	}
 	return data
+}
+
+func MenuTree(rows []*bean.EntryTree) (tree []*bean.EntryTree) {
+	tmp := make(map[int64]*bean.EntryTree)
+	for _, v := range rows {
+		tmp[v.ID] = v
+	}
+	for _, v := range rows {
+		if parent, ok := tmp[v.PID]; ok {
+			parent.Child = append(parent.Child, v)
+		} else {
+			tree = append(tree, v)
+		}
+	}
+	return
 }

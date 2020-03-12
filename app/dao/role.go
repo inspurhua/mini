@@ -1,44 +1,29 @@
 package dao
 
-import "huage.tech/mini/app/config"
+import "huage.tech/mini/app/bean"
 
-type Role struct {
-	ID     int64  `json:"id" gorm:"primary_key"`
-	Name   string `json:"name"`
-	Status int    `json:"status" default:1`
-}
-
-func (Role) TableName() string {
-	return config.Prefix + "role"
-}
-
-func RoleList() (r []Role, err error) {
+func RoleList() (r []*bean.Role, err error) {
 	err = db.Find(&r).Error
 	return
 }
 
-func RoleCreate(Name string, Status int) (r Role, err error) {
-	r = Role{
-		Name:   Name,
-		Status: Status,
-	}
-	err = db.Model(&Role{}).Create(&r).Error
+func RoleCreate(role *bean.Role) (result *bean.Role, err error) {
+	result = role
+	err = db.Create(result).Error
 	return
 }
 
 func RoleDelete(id int64) (err error) {
-	err = db.Where("id=?", id).Delete(&Role{}).Error
+	err = db.Where("id=?", id).Delete(&bean.Role{}).Error
 	return
 }
 
-func RoleRead(id int64) (r Role, err error) {
-	err = db.Where("id=?", id).First(&r).Error
+func RoleRead(id int64) (result *bean.Role, err error) {
+	err = db.Where("id=?", id).First(result).Error
 	return
 }
 
-func RoleUpdate(role *Role) (r Role, err error) {
-	err = db.Model(&r).Update(role).Error
-	//err = db.Model(&r).Where("id=?", id).Updates(m).Error
-	//db.Where("id=?", id).First(&r)
+func RoleUpdate(role *bean.Role) (result *bean.Role, err error) {
+	err = db.Model(result).Update(role).Error
 	return
 }

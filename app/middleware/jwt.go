@@ -5,33 +5,32 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/config"
-	"huage.tech/mini/app/util"
 	"time"
 )
 
 // JWTAuth 中间件，检查token
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("token")
-		if token == "" {
-			util.AbortNewResultErrorOfClient(c, errors.New("未提供token"))
-			return
-		}
-
-		j := NewJWT()
-		// parseToken 解析token包含的信息
-		claims, err := j.ParseToken(token)
-		if err != nil {
-			if err == TokenExpired {
-				util.AbortNewResultErrorOfClient(c, errors.New("token已过期"))
-				return
-			}
-			util.AbortNewResultErrorOfClient(c, errors.New("错误的token"))
-			return
-		}
-		// 继续交由下一个路由处理,并将解析出的信息传递下去
-		c.Set("claims", claims)
-		c.Set("token", token)
+		//token := c.Request.Header.Get("token")
+		//if token == "" {
+		//	util.AbortNewResultErrorOfClient(c, errors.New("未提供token"))
+		//	return
+		//}
+		//
+		//j := NewJWT()
+		//// parseToken 解析token包含的信息
+		//claims, err := j.ParseToken(token)
+		//if err != nil {
+		//	if err == TokenExpired {
+		//		util.AbortNewResultErrorOfClient(c, errors.New("token已过期"))
+		//		return
+		//	}
+		//	util.AbortNewResultErrorOfClient(c, errors.New("错误的token"))
+		//	return
+		//}
+		//// 继续交由下一个路由处理,并将解析出的信息传递下去
+		//c.Set("claims", claims)
+		//c.Set("token", token)
 		c.Next()
 	}
 }

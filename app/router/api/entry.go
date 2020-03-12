@@ -8,9 +8,9 @@ import (
 	"strconv"
 )
 
-func RoleCreate(c *gin.Context) {
+func EntryCreate(c *gin.Context) {
 	var err error
-	var form bean.Role
+	var form bean.Entry
 
 	err = c.ShouldBind(&form)
 	if err != nil {
@@ -18,7 +18,7 @@ func RoleCreate(c *gin.Context) {
 		return
 	}
 
-	r, err := dao.RoleCreate(&form)
+	r, err := dao.EntryCreate(&form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -27,8 +27,8 @@ func RoleCreate(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofWrite(r, 1))
 }
 
-func RoleList(c *gin.Context) {
-	r, err := dao.RoleList()
+func EntryList(c *gin.Context) {
+	r, err := dao.EntryList()
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -37,14 +37,14 @@ func RoleList(c *gin.Context) {
 	return
 }
 
-func RoleDelete(c *gin.Context) {
-	roleId := c.Param("id")
-	id, err := strconv.ParseInt(roleId, 10, 64)
+func EntryDelete(c *gin.Context) {
+	EntryId := c.Param("id")
+	id, err := strconv.ParseInt(EntryId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	err = dao.RoleDelete(id)
+	err = dao.EntryDelete(id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -52,14 +52,14 @@ func RoleDelete(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofWrite(nil, 1))
 }
 
-func RoleRead(c *gin.Context) {
-	roleId := c.Param("id")
-	id, err := strconv.ParseInt(roleId, 10, 64)
+func EntryRead(c *gin.Context) {
+	EntryId := c.Param("id")
+	id, err := strconv.ParseInt(EntryId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	r, err := dao.RoleRead(id)
+	r, err := dao.EntryRead(id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -67,11 +67,11 @@ func RoleRead(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofRead(r, 1))
 }
 
-func RoleUpdate(c *gin.Context) {
+func EntryUpdate(c *gin.Context) {
 	var err error
-	var form bean.Role
-	roleId := c.Param("id")
-	id, err := strconv.ParseInt(roleId, 10, 64)
+	var form bean.Entry
+	EntryId := c.Param("id")
+	id, err := strconv.ParseInt(EntryId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -83,11 +83,21 @@ func RoleUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
-	r, err := dao.RoleUpdate(&form)
+	r, err := dao.EntryUpdate(&form)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
 
 	c.JSON(200, util.NewResultOKofWrite(r, 1))
+}
+
+func Entries(c *gin.Context) {
+	v, err := dao.Entries()
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	tree := util.MenuTree(v)
+	c.JSON(200, util.NewResultOKofRead(tree, 1))
 }
