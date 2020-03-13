@@ -5,7 +5,7 @@ import (
 )
 
 func OrgList() (e []bean.Org, err error) {
-	err = db.Find(&e).Error
+	err = db.Order("sort").Find(&e).Error
 	return
 }
 
@@ -32,7 +32,6 @@ func OrgUpdate(e bean.Org) (result bean.Org, err error) {
 
 func OrgTree() (result []*bean.OrgTree, err error) {
 	err = db.Model(&bean.OrgTree{}).
-		Where("type=?", 1).
 		Order("sort").
 		Find(&result).Error
 	return

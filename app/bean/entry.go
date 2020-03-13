@@ -1,6 +1,8 @@
 package bean
 
-import "huage.tech/mini/app/config"
+import (
+	"huage.tech/mini/app/config"
+)
 
 type Entry struct {
 	ID     int64  `json:"id" gorm:"primary_key"`

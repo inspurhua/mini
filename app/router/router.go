@@ -22,6 +22,7 @@ func NewRouter() *gin.Engine {
 		//刷新token
 		_api.GET("/refresh", api.Refresh)
 		_api.GET("/menu", api.Entries)
+		_api.GET("/orgtree", api.OrgTree)
 		_auth := _api.Group("")
 		_auth.Use(middleware.Auth())
 		{

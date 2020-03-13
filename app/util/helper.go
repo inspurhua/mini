@@ -16,8 +16,23 @@ func StructToMap(obj interface{}) map[string]interface{} {
 	return data
 }
 
-func MenuTree(rows []*bean.EntryTree) (tree []*bean.EntryTree) {
+func TreeOfEntry(rows []*bean.EntryTree) (tree []*bean.EntryTree) {
 	tmp := make(map[int64]*bean.EntryTree)
+	for _, v := range rows {
+		tmp[v.ID] = v
+	}
+	for _, v := range rows {
+		if parent, ok := tmp[v.PId]; ok {
+			parent.Child = append(parent.Child, v)
+		} else {
+			tree = append(tree, v)
+		}
+	}
+	return
+}
+
+func TreeOfOrg(rows []*bean.OrgTree) (tree []*bean.OrgTree) {
+	tmp := make(map[int64]*bean.OrgTree)
 	for _, v := range rows {
 		tmp[v.ID] = v
 	}

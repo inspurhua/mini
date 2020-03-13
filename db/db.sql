@@ -89,5 +89,6 @@ create table sys_org
     id   bigserial primary key,
     pid  integer,
     code text,--333编码
-    name text
+    name text,
+    sort int
 );

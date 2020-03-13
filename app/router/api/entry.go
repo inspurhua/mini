@@ -98,6 +98,7 @@ func Entries(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	tree := util.MenuTree(v)
+
+	var tree = util.TreeOfEntry(v)
 	c.JSON(200, util.NewResultOKofRead(tree, 1))
 }

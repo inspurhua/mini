@@ -107,6 +107,6 @@ func OrgTree(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	tree := util.MenuTree(v)
+	tree := util.TreeOfOrg(v)
 	c.JSON(200, util.NewResultOKofRead(tree, 1))
 }

@@ -23,7 +23,7 @@ func AuthList(c *gin.Context) {
 		return
 	}
 	if tree == "1" {
-		entries = util.MenuTree(entries)
+		entries = util.TreeOfEntry(entries)
 	}
 	c.JSON(200, util.NewResultOKofRead(entries, len(entries)))
 	return
