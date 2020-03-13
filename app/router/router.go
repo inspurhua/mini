@@ -21,20 +21,20 @@ func NewRouter() *gin.Engine {
 		//刷新token
 		_api.GET("/refresh", api.Refresh)
 		_api.GET("/menu", api.Entries)
-		_auth := _api.Group("auth")
+		_auth := _api.Group("")
 		_auth.Use(middleware.Auth())
 		{
-			_api.GET("/role", api.RoleList)
-			_api.POST("/role", api.RoleCreate)
-			_api.DELETE("/role/:id", api.RoleDelete)
-			_api.PUT("/role/:id", api.RoleUpdate)
-			_api.GET("/role/:id", api.RoleRead)
+			_auth.GET("/role", api.RoleList)
+			_auth.POST("/role", api.RoleCreate)
+			_auth.DELETE("/role/:id", api.RoleDelete)
+			_auth.PUT("/role/:id", api.RoleUpdate)
+			_auth.GET("/role/:id", api.RoleRead)
 
-			_api.GET("/entry", api.EntryList)
-			_api.POST("/entry", api.EntryCreate)
-			_api.DELETE("/entry/:id", api.EntryDelete)
-			_api.PUT("/entry/:id", api.EntryUpdate)
-			_api.GET("/entry/:id", api.EntryRead)
+			_auth.GET("/entry", api.EntryList)
+			_auth.POST("/entry", api.EntryCreate)
+			_auth.DELETE("/entry/:id", api.EntryDelete)
+			_auth.PUT("/entry/:id", api.EntryUpdate)
+			_auth.GET("/entry/:id", api.EntryRead)
 
 		}
 	}
