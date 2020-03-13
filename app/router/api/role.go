@@ -18,7 +18,7 @@ func RoleCreate(c *gin.Context) {
 		return
 	}
 
-	r, err := dao.RoleCreate(&form)
+	r, err := dao.RoleCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -83,7 +83,7 @@ func RoleUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
-	r, err := dao.RoleUpdate(&form)
+	r, err := dao.RoleUpdate(form)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

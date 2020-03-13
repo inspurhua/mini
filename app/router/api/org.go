@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/dao"
@@ -8,17 +9,16 @@ import (
 	"strconv"
 )
 
-func EntryCreate(c *gin.Context) {
+func OrgCreate(c *gin.Context) {
 	var err error
-	var form bean.Entry
+	var form bean.Org
 
 	err = c.ShouldBind(&form)
 	if err != nil {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
-
-	r, err := dao.EntryCreate(form)
+	r, err := dao.OrgCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -27,24 +27,23 @@ func EntryCreate(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofWrite(r, 1))
 }
 
-func EntryList(c *gin.Context) {
-	r, err := dao.EntryList()
+func OrgDelete(c *gin.Context) {
+	OrgId := c.Param("id")
+	id, err := strconv.ParseInt(OrgId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	c.JSON(200, util.NewResultOKofRead(r, len(r)))
-	return
-}
-
-func EntryDelete(c *gin.Context) {
-	EntryId := c.Param("id")
-	id, err := strconv.ParseInt(EntryId, 10, 64)
+	has, err := dao.OrgHasChild(id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	err = dao.EntryDelete(id)
+	if has {
+		util.AbortNewResultErrorOfServer(c, errors.New("当前部门存在下级部门不能删除"))
+		return
+	}
+	err = dao.OrgDelete(id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -52,26 +51,11 @@ func EntryDelete(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofWrite(nil, 1))
 }
 
-func EntryRead(c *gin.Context) {
-	EntryId := c.Param("id")
-	id, err := strconv.ParseInt(EntryId, 10, 64)
-	if err != nil {
-		util.AbortNewResultErrorOfServer(c, err)
-		return
-	}
-	r, err := dao.EntryRead(id)
-	if err != nil {
-		util.AbortNewResultErrorOfServer(c, err)
-		return
-	}
-	c.JSON(200, util.NewResultOKofRead(r, 1))
-}
-
-func EntryUpdate(c *gin.Context) {
+func OrgUpdate(c *gin.Context) {
 	var err error
-	var form bean.Entry
-	EntryId := c.Param("id")
-	id, err := strconv.ParseInt(EntryId, 10, 64)
+	var form bean.Org
+	OrgId := c.Param("id")
+	id, err := strconv.ParseInt(OrgId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -83,7 +67,7 @@ func EntryUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
-	r, err := dao.EntryUpdate(form)
+	r, err := dao.OrgUpdate(form)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -92,8 +76,33 @@ func EntryUpdate(c *gin.Context) {
 	c.JSON(200, util.NewResultOKofWrite(r, 1))
 }
 
-func Entries(c *gin.Context) {
-	v, err := dao.Entries()
+func OrgRead(c *gin.Context) {
+	OrgId := c.Param("id")
+	id, err := strconv.ParseInt(OrgId, 10, 64)
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	r, err := dao.OrgRead(id)
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	c.JSON(200, util.NewResultOKofRead(r, 1))
+}
+
+func OrgList(c *gin.Context) {
+	r, err := dao.OrgList()
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	c.JSON(200, util.NewResultOKofRead(r, len(r)))
+	return
+}
+
+func OrgTree(c *gin.Context) {
+	v, err := dao.OrgTree()
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

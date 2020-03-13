@@ -12,6 +12,7 @@ type Entry struct {
 	Icon   string `json:"icon" form:"icon"`
 	Target string `json:"target" form:"target"`
 	Sort   int    `json:"sort" form:"sort"`
+	AuthId int64  `json:"auth_id"`
 }
 
 func (Entry) TableName() string {

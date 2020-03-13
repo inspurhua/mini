@@ -31,12 +31,20 @@ func NewRouter() *gin.Engine {
 			_auth.PUT("/role/:id", api.RoleUpdate)
 			_auth.GET("/role/:id", api.RoleRead)
 
+			_auth.GET("/role/:id/auth", api.AuthList)
+			_auth.PUT("/role/:id/auth", api.AuthUpdate)
+
 			_auth.GET("/entry", api.EntryList)
 			_auth.POST("/entry", api.EntryCreate)
 			_auth.DELETE("/entry/:id", api.EntryDelete)
 			_auth.PUT("/entry/:id", api.EntryUpdate)
 			_auth.GET("/entry/:id", api.EntryRead)
 
+			_auth.GET("/org", api.OrgList)
+			_auth.POST("/org", api.OrgCreate)
+			_auth.DELETE("/org/:id", api.OrgDelete)
+			_auth.PUT("/org/:id", api.OrgUpdate)
+			_auth.GET("/org/:id", api.OrgRead)
 		}
 	}
 
