@@ -24,7 +24,8 @@ func NewRouter() *gin.Engine {
 		_api.GET("/menu", api.Entries)
 		_api.GET("/orgtree", api.OrgTree)
 		_auth := _api.Group("")
-		_auth.Use(middleware.Auth())
+		_auth.Use(middleware.Auth(), middleware.Logger())
+		_auth.Use(middleware.Auth(), middleware.Logger())
 		{
 			_auth.GET("/role", api.RoleList)
 			_auth.POST("/role", api.RoleCreate)
