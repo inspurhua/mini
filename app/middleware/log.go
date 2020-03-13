@@ -4,17 +4,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/dao"
+	"io/ioutil"
 )
 
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
+		body, _ := ioutil.ReadAll(c.Request.Body)
 		log := bean.Log{
 			ID:     0,
 			UserId: 0,
 			Method: c.Request.Method,
 			Uri:    c.Request.RequestURI,
-			Data:   "",
+			Data:   string(body),
 			Ip:     c.ClientIP(),
 			Ua:     c.Request.UserAgent(),
 		}
