@@ -31,6 +31,14 @@ func EntryUpdate(e *bean.Entry) (result *bean.Entry, err error) {
 }
 
 func Entries() (result []*bean.EntryTree, err error) {
-	err = db.Model(&bean.EntryTree{}).Order("sort").Find(&result).Error
+	err = db.Model(&bean.EntryTree{}).
+		Where("type=?", 1).
+		Order("sort").
+		Find(&result).Error
+	return
+}
+
+func FindEntry(method, url string) (entry *bean.Entry, err error) {
+	err = db.Where("method=? and url=?", method, url).First(entry).Error
 	return
 }

@@ -22,7 +22,7 @@ func MenuTree(rows []*bean.EntryTree) (tree []*bean.EntryTree) {
 		tmp[v.ID] = v
 	}
 	for _, v := range rows {
-		if parent, ok := tmp[v.PID]; ok {
+		if parent, ok := tmp[v.PId]; ok {
 			parent.Child = append(parent.Child, v)
 		} else {
 			tree = append(tree, v)

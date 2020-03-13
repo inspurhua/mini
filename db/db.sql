@@ -36,6 +36,7 @@ create table sys_entry
     title  text,
     pid    integer,
     type   integer default 1,--1菜单2功能
+    method text,
     url    text,
     icon   text,
     target text    default '_self',

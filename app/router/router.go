@@ -16,6 +16,7 @@ func NewRouter() *gin.Engine {
 
 	_api := r.Group("/api")
 	_api.POST("/login", api.Login)
+	_api.GET("/test", api.Test)
 	_api.Use(middleware.JWTAuth())
 	{
 		//刷新token
