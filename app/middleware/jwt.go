@@ -32,6 +32,9 @@ func JWTAuth() gin.HandlerFunc {
 		// 继续交由下一个路由处理,并将解析出的信息传递下去
 		c.Set("claims", claims)
 		c.Set("token", token)
+		c.Set("UID", claims.ID)
+		c.Set("ORG_ID", claims.Org)
+		c.Set("ROLE_ID", claims.Role)
 		c.Next()
 	}
 }

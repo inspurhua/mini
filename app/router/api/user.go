@@ -1,8 +1,10 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
+	"huage.tech/mini/app/config"
 	"huage.tech/mini/app/dao"
 	"huage.tech/mini/app/util"
 	"strconv"
@@ -17,7 +19,7 @@ func UserCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
-
+	form.Password = util.Md5(config.JwtSecret + form.Password)
 	r, err := dao.UserCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -104,6 +106,7 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
+
 	r, err := dao.UserUpdate(form)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -111,4 +114,36 @@ func UserUpdate(c *gin.Context) {
 	}
 
 	c.JSON(200, util.NewResultOKofWrite(r, 1))
+}
+
+func ChangPassword(c *gin.Context) {
+	new := c.DefaultPostForm("new", "")
+	new1 := c.DefaultPostForm("repeat", "")
+
+	if new != new1 {
+		util.AbortNewResultErrorOfClient(
+			nil, errors.New("两次新密码输入不一致"))
+		return
+	}
+
+	if uId, ok := c.Get("UID"); ok {
+		if uid, ok := uId.(int64); ok {
+			u, err := dao.UserRead(uid)
+			if err != nil {
+				util.AbortNewResultErrorOfClient(
+					nil, errors.New("不存在此用户"))
+				return
+			}
+			u.Password = util.Md5(config.JwtSecret + new)
+			r, err := dao.UserUpdate(u)
+			if err != nil {
+				util.AbortNewResultErrorOfServer(c, err)
+				return
+			}
+
+			c.JSON(200, util.NewResultOKofWrite(r, 1))
+			return
+		}
+
+	}
 }

@@ -20,6 +20,7 @@ func NewRouter() *gin.Engine {
 	_api.Use(middleware.JWTAuth())
 	{
 		//刷新token
+		_api.POST("/chang", api.ChangPassword)
 		_api.POST("/file", api.FileCreate)
 		_api.GET("/file/:id", api.FileRead)
 		_api.GET("/refresh", api.Refresh)

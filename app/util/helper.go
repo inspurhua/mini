@@ -1,6 +1,8 @@
 package util
 
 import (
+	"crypto/md5"
+	"fmt"
 	"huage.tech/mini/app/bean"
 	"reflect"
 	"strconv"
@@ -59,4 +61,11 @@ func PageLimit(pag, lim string) (offset int64, limit int64, err error) {
 
 	offset = (page - 1) * limit
 	return
+}
+
+func Md5(str string) string {
+	data := []byte(str)
+	has := md5.Sum(data)
+	md5str := fmt.Sprintf("%x", has)
+	return md5str
 }
