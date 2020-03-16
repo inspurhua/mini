@@ -47,6 +47,12 @@ func NewRouter() *gin.Engine {
 			_auth.DELETE("/org/:id", api.OrgDelete)
 			_auth.PUT("/org/:id", api.OrgUpdate)
 			_auth.GET("/org/:id", api.OrgRead)
+
+			_auth.GET("/user", api.UserList)
+			_auth.POST("/user", api.UserCreate)
+			_auth.DELETE("/user/:id", api.UserDelete)
+			_auth.PUT("/user/:id", api.UserUpdate)
+			_auth.GET("/user/:id", api.UserRead)
 		}
 	}
 
