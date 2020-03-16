@@ -11,8 +11,22 @@ func Login(account, password string) (u bean.User, err error) {
 	return
 }
 
-func UserList() (r []bean.User, err error) {
-	err = db.Find(&r).Error
+func UserList(account string, roleId, OrgId int, offset, limit int64) (r []bean.User, count int, err error) {
+	db := db.Model(&bean.User{})
+	if len(account) > 0 {
+		db = db.Where("account like ? ", "%"+account+"%")
+	}
+	if roleId > 0 {
+		db = db.Where("role_id = ?", roleId)
+	}
+	if OrgId > 0 {
+		db = db.Where("org_id = ?", OrgId)
+	}
+	err = db.Count(&count).Error
+	if err != nil {
+		return
+	}
+	err = db.Offset(offset).Limit(limit).Find(&r).Error
 	return
 }
 

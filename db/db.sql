@@ -25,7 +25,7 @@ values (1, 0, '100', '我的组织', 1),
        (4, 1, '100103', 'C部门', 3),
        (5, 4, '100103101', 'C1部门', 1),
        (6, 4, '100103102', 'C2部门', 2);
-
+drop table sys_entry;
 create table sys_entry
 (
     id     bigserial primary key,
@@ -68,7 +68,7 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1),
        (1301, '组织列表', 1300, 2, 'GET', '/api/log', '', '', 1),
        (2, '业务管理', 0, 1, '', '', '', '', 1);
 
-
+drop table sys_auth;
 create table sys_auth
 (
     id       bigserial primary key,
@@ -102,7 +102,8 @@ create table sys_user
     delete_at timestamp without time zone
 );
 
-
+insert into sys_user(id, account, password, role_id, org_id)
+values (1, 'zhanghua', md5('abc123456'), 1, 1);
 
 -- create table sys_token
 -- (
@@ -114,7 +115,7 @@ create table sys_user
 --     exp       integer,
 --     create_at timestamp without time zone default localtimestamp(0)
 -- );
-
+drop table sys_file;
 create table sys_file
 (
     id        bigserial primary key,
@@ -125,6 +126,7 @@ create table sys_file
     create_at timestamp without time zone default localtimestamp(0)
 );
 
+drop table sys_log;
 create table sys_log
 (
     id        bigserial primary key,

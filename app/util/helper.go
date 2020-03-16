@@ -3,6 +3,7 @@ package util
 import (
 	"huage.tech/mini/app/bean"
 	"reflect"
+	"strconv"
 )
 
 func StructToMap(obj interface{}) map[string]interface{} {
@@ -43,5 +44,19 @@ func TreeOfOrg(rows []*bean.OrgTree) (tree []*bean.OrgTree) {
 			tree = append(tree, v)
 		}
 	}
+	return
+}
+
+func PageLimit(pag, lim string) (offset int64, limit int64, err error) {
+	page, err := strconv.ParseInt(pag, 10, 64)
+	if err != nil {
+		return
+	}
+	limit, err = strconv.ParseInt(lim, 10, 64)
+	if err != nil {
+		return
+	}
+
+	offset = (page - 1) * limit
 	return
 }

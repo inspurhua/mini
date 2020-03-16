@@ -35,7 +35,7 @@ func FileCreate(c *gin.Context) {
 		SaveName: path + file.Filename,
 		SavePath: path,
 		Url:      urlPrefix + file.Filename,
-		CreateAt: nil,
+		CreateAt: time.Now(),
 	}
 
 	r, err := dao.FileCreate(form)

@@ -28,12 +28,33 @@ func UserCreate(c *gin.Context) {
 }
 
 func UserList(c *gin.Context) {
-	r, err := dao.UserList()
+	account := c.DefaultQuery("account", "")
+
+	roleId, err := strconv.Atoi(c.DefaultQuery("role_id", ""))
+
+	if err != nil {
+		roleId = 0
+	}
+
+	orgId, err := strconv.Atoi(c.DefaultQuery("org_id", ""))
+	if err != nil {
+		orgId = 0
+	}
+	pag := c.DefaultQuery("page", "1")
+	lim := c.DefaultQuery("limit", "20")
+	offset, limit, err := util.PageLimit(pag, lim)
+	if err != nil {
+		util.AbortNewResultErrorOfClient(c, err)
+		return
+	}
+
+	r, count, err := dao.UserList(account, roleId, orgId, offset, limit)
+
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	c.JSON(200, util.NewResultOKofRead(r, len(r)))
+	c.JSON(200, util.NewResultOKofRead(r, count))
 	return
 }
 
