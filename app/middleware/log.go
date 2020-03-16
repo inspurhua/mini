@@ -20,9 +20,9 @@ func Logger() gin.HandlerFunc {
 			Ip:     c.ClientIP(),
 			Ua:     c.Request.UserAgent(),
 		}
-		if claims, ok := c.Get("claims"); ok {
-			if cc, ok := claims.(*CustomClaims); ok {
-				log.UserId = cc.ID
+		if uId, ok := c.Get("UID"); ok {
+			if id, ok := uId.(int64); ok {
+				log.UserId = id
 			}
 		}
 		if _, err := dao.LogCreate(log); err != nil {
