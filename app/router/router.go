@@ -20,6 +20,8 @@ func NewRouter() *gin.Engine {
 	_api.Use(middleware.JWTAuth())
 	{
 		//刷新token
+		_api.POST("/file", api.FileCreate)
+		_api.GET("/file/:id", api.FileRead)
 		_api.GET("/refresh", api.Refresh)
 		_api.GET("/menu", api.Entries)
 		_api.GET("/orgtree", api.OrgTree)
@@ -53,6 +55,8 @@ func NewRouter() *gin.Engine {
 			_auth.DELETE("/user/:id", api.UserDelete)
 			_auth.PUT("/user/:id", api.UserUpdate)
 			_auth.GET("/user/:id", api.UserRead)
+
+			_auth.GET("/log", api.LogList)
 		}
 	}
 
