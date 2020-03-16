@@ -122,7 +122,7 @@ func ChangPassword(c *gin.Context) {
 
 	if new != new1 {
 		util.AbortNewResultErrorOfClient(
-			nil, errors.New("两次新密码输入不一致"))
+			c, errors.New("两次新密码输入不一致"))
 		return
 	}
 

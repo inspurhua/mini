@@ -10,7 +10,7 @@ import (
 )
 
 // JWTAuth 中间件，检查token
-func JWTAuth() gin.HandlerFunc {
+func JWTToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("token")
 		if token == "" {

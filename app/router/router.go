@@ -17,17 +17,17 @@ func NewRouter() *gin.Engine {
 	_api := r.Group("/api")
 	_api.POST("/login", api.Login)
 	_api.GET("/test", api.Test)
-	_api.Use(middleware.JWTAuth())
+	_api.Use(middleware.JWTToken())
 	{
 		//刷新token
-		_api.POST("/chang", api.ChangPassword)
+		_api.POST("/change", api.ChangPassword)
 		_api.POST("/file", api.FileCreate)
 		_api.GET("/file/:id", api.FileRead)
 		_api.GET("/refresh", api.Refresh)
 		_api.GET("/menu", api.Entries)
 		_api.GET("/orgtree", api.OrgTree)
+
 		_auth := _api.Group("")
-		_auth.Use(middleware.Auth(), middleware.Logger())
 		_auth.Use(middleware.Auth(), middleware.Logger())
 		{
 			_auth.GET("/role", api.RoleList)

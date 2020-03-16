@@ -50,7 +50,3 @@ func UserUpdate(User bean.User) (result bean.User, err error) {
 	err = db.Model(&result).Update(User).Error
 	return
 }
-
-func ChangePassword(old, new, new1 string) (err error) {
-
-}
