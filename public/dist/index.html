@@ -137,10 +137,23 @@
         miniAdmin.render(options);
 
         $('.login-out').on("click", function () {
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('expire');
             layer.msg('退出登录成功', function () {
                 window.location = '/login.html';
             });
         });
+
+        //5分钟刷新一次token
+        setInterval(function () {
+            var now = (new Date().getTime() / 1000);
+            if (+sessionStorage['expire'] - now < 600) {
+                $.get(config.server + "/api/refresh?token=" + sessionStorage['token']).then(function (d) {
+                    sessionStorage.setItem('token', d.data.AccessToken);
+                    sessionStorage.setItem('expire', d.data.Expire);
+                });
+            }
+        }, 1000 * 60 * 5);
     });
 </script>
 </body>

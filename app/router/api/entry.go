@@ -106,7 +106,7 @@ func Entries(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"homeInfo": gin.H{
 			"title": "首页",
-			"href":  "/page/welcome-1.html",
+			"href":  "page/welcome-1.html",
 		},
 		"logoInfo": gin.H{
 			"title": config.AppName,
