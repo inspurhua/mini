@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	AppName   string
 	RunMode   string
 	JwtSecret string
 
@@ -30,6 +31,7 @@ func init() {
 	if err != nil {
 		log.Fatal("app.ini配置文件有错误:%v", err)
 	}
+	AppName = cfg.Section("").Key("app_name").MustString("")
 	RunMode = cfg.Section("").Key("app_mode").MustString("debug")
 	JwtSecret = cfg.Section("").Key("jwt_secret").MustString("!@)*#)!@U#@*!@!)")
 

@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
+	"huage.tech/mini/app/config"
 	"huage.tech/mini/app/dao"
 	"huage.tech/mini/app/util"
 	"strconv"
@@ -100,5 +101,16 @@ func Entries(c *gin.Context) {
 	}
 
 	var tree = util.TreeOfEntry(v)
-	c.JSON(200, util.NewResultOKofRead(tree, 1))
+
+	//c.JSON(200, util.NewResultOKofRead(tree, 1))
+	c.JSON(200, gin.H{
+		"homeInfo": gin.H{
+			"title": "首页",
+			"href":  "/page/welcome-1.html",
+		},
+		"logoInfo": gin.H{
+			"title": config.AppName,
+			"image": "images/logo.png",
+			"href":  ""},
+		"menuInfo": tree})
 }

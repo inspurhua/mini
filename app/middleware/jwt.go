@@ -14,8 +14,12 @@ func JWTToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("token")
 		if token == "" {
-			util.AbortNewResultErrorOfClient(c, errors.New("未提供token"))
-			return
+			queryToken := c.DefaultQuery("token", "")
+			if queryToken == "" {
+				util.AbortNewResultErrorOfClient(c, errors.New("未提供token"))
+				return
+			}
+			token = queryToken
 		}
 
 		j := NewJWT()

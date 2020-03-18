@@ -9,14 +9,16 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+
+	r.GET("/test", api.Test)
+
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-
+	r.Use(middleware.Cors())
 	gin.SetMode(config.RunMode)
 
 	_api := r.Group("/api")
 	_api.POST("/login", api.Login)
-	_api.GET("/test", api.Test)
 	_api.Use(middleware.JWTToken())
 	{
 		//刷新token
