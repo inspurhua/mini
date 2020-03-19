@@ -117,9 +117,14 @@ func UserUpdate(c *gin.Context) {
 }
 
 func ChangPassword(c *gin.Context) {
+	old := c.DefaultPostForm("old", "")
 	new := c.DefaultPostForm("new", "")
 	new1 := c.DefaultPostForm("repeat", "")
-
+	if old == "" {
+		util.AbortNewResultErrorOfClient(
+			c, errors.New("请输入旧密码"))
+		return
+	}
 	if new != new1 {
 		util.AbortNewResultErrorOfClient(
 			c, errors.New("两次新密码输入不一致"))
@@ -132,6 +137,11 @@ func ChangPassword(c *gin.Context) {
 			if err != nil {
 				util.AbortNewResultErrorOfClient(
 					nil, errors.New("不存在此用户"))
+				return
+			}
+			if u.Password != util.Md5(config.JwtSecret+old) {
+				util.AbortNewResultErrorOfClient(
+					nil, errors.New("旧密码不正确"))
 				return
 			}
 			u.Password = util.Md5(config.JwtSecret + new)

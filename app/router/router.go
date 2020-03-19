@@ -22,7 +22,7 @@ func NewRouter() *gin.Engine {
 	_api.Use(middleware.JWTToken())
 	{
 		//刷新token
-		_api.POST("/change", api.ChangPassword)
+		_api.PUT("/change", api.ChangPassword)
 		_api.POST("/file", api.FileCreate)
 		_api.GET("/file/:id", api.FileRead)
 		_api.GET("/refresh", api.Refresh)
