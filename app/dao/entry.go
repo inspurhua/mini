@@ -38,7 +38,7 @@ func Entries() (result []*bean.EntryTree, err error) {
 	return
 }
 
-func FindEntry(method, url string) (entry bean.Entry, err error) {
-	err = db.Where("method=? and url=?", method, url).First(entry).Error
+func FindEntry(method, href string) (entry bean.Entry, err error) {
+	err = db.Where("method=? and href=?", method, href).First(entry).Error
 	return
 }

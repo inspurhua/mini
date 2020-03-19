@@ -102,8 +102,7 @@ func Entries(c *gin.Context) {
 
 	var tree = util.TreeOfEntry(v)
 
-	//c.JSON(200, util.NewResultOKofRead(tree, 1))
-	c.JSON(200, gin.H{
+	c.JSON(200, util.NewResultOKofRead(gin.H{
 		"homeInfo": gin.H{
 			"title": "首页",
 			"href":  "page/welcome-1.html",
@@ -112,5 +111,6 @@ func Entries(c *gin.Context) {
 			"title": config.AppName,
 			"image": "images/logo.png",
 			"href":  ""},
-		"menuInfo": tree})
+		"menuInfo": tree}, 1))
+
 }

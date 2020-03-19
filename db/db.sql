@@ -33,14 +33,14 @@ create table sys_entry
     pid    integer,
     type   integer default 1,--1菜单2功能
     method text,
-    url    text,
+    href    text,
     icon   text,
     target text    default '_self',
     sort   int
 );
 insert into sys_entry
 values (1, '系统管理', 0, 1, '', '', '', '', 1),
-       (1000, '角色', 1, 1, '', '/sys/role.html', '', '_self', 1),
+       (1000, '角色', 1, 1, '', 'sys/role.html', 'fa fa-group', '_self', 1),
        (1001, '角色列表', 1000, 2, 'GET', '/api/role', '', '', 1),
        (1002, '添加角色', 1000, 2, 'POST', '/api/role', '', '', 2),
        (1003, '编辑角色', 1000, 2, 'PUT', '/api/role/:id', '', '', 3),
@@ -49,7 +49,7 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1),
        (1006, '查看授权', 1000, 2, 'GET', '/api/role/:id/auth', '', '', 6),
        (1007, '设置授权', 1000, 2, 'PUT', '/api/role/:id/auth', '', '', 7),
 
-       (1100, '组织', 1, 1, '', '/sys/org.html', '', '_self', 1),
+       (1100, '组织', 1, 1, '', 'sys/org.html', 'fa fa-sitemap', '_self', 1),
        (1101, '组织列表', 1100, 2, 'GET', '/api/org', '', '', 1),
        (1102, '添加组织', 1100, 2, 'POST', '/api/org', '', '', 2),
        (1103, '编辑组织', 1100, 2, 'PUT', '/api/org/:id', '', '', 3),
@@ -57,14 +57,14 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1),
        (1105, '查看组织', 1100, 2, 'GET', '/api/org/:id', '', '', 5),
 
 
-       (1200, '用户', 1, 1, '', '/sys/user.html', '', '_self', 1),
+       (1200, '用户', 1, 1, '', 'sys/user.html', 'fa fa-user', '_self', 1),
        (1201, '用户列表', 1200, 2, 'GET', '/api/user', '', '', 1),
        (1202, '添加用户', 1200, 2, 'POST', '/api/user', '', '', 2),
        (1203, '编辑用户', 1200, 2, 'PUT', '/api/user/:id', '', '', 3),
        (1204, '删除用户', 1200, 2, 'DELETE', '/api/user/:id', '', '', 4),
        (1205, '查看用户', 1200, 2, 'GET', '/api/user/:id', '', '', 5),
 
-       (1300, '日志', 1, 1, '', '/sys/log.html', '', '_self', 1),
+       (1300, '日志', 1, 1, '', 'sys/log.html', 'fa fa-list', '_self', 1),
        (1301, '组织列表', 1300, 2, 'GET', '/api/log', '', '', 1),
        (2, '业务管理', 0, 1, '', '', '', '', 1);
 

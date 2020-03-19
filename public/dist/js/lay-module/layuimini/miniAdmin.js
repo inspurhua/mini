@@ -38,7 +38,11 @@ layui.define(["jquery", "miniMenu", "miniPage", "miniTheme"], function (exports)
             options.menuChildOpen = options.menuChildOpen || false;
             options.loadingTime = options.loadingTime || 1;
             options.pageAnim = options.pageAnim || false;
-            $.getJSON(options.iniUrl, function (data) {
+            $.getJSON(options.iniUrl, function (res) {
+                if (res.code != 0) {
+                    location.href = "/login.html"
+                }
+                data = res.data;
                 if (data == null) {
                     miniAdmin.error('暂无菜单信息')
                 } else {
@@ -46,7 +50,7 @@ layui.define(["jquery", "miniMenu", "miniPage", "miniTheme"], function (exports)
                     miniAdmin.renderClear(options.clearUrl);
                     miniAdmin.renderAnim(options.pageAnim);
                     miniAdmin.listen({
-                        homeInfo:data.homeInfo,
+                        homeInfo: data.homeInfo,
                         multiModule: options.multiModule,
                     });
                     miniMenu.render({
@@ -55,7 +59,7 @@ layui.define(["jquery", "miniMenu", "miniPage", "miniTheme"], function (exports)
                         menuChildOpen: options.menuChildOpen
                     });
                     miniPage.render({
-                        homeInfo:data.homeInfo,
+                        homeInfo: data.homeInfo,
                         menuList: data.menuInfo,
                         multiModule: options.multiModule,
                         renderPageVersion: options.renderPageVersion,
@@ -89,7 +93,7 @@ layui.define(["jquery", "miniMenu", "miniPage", "miniTheme"], function (exports)
          * @param clearUrl
          */
         renderClear: function (clearUrl) {
-            $('.layuimini-clear').attr('data-href',clearUrl);
+            $('.layuimini-clear').attr('data-href', clearUrl);
         },
 
         /**

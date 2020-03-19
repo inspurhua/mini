@@ -10,7 +10,7 @@ type Entry struct {
 	PId    int64  `json:"pid" form:"pid" gorm:"column:pid"`
 	Type   int    `json:"type" form:"type"`
 	Method string `json:"method" form:"method"`
-	Url    string `json:"url" form:"url"`
+	Href    string `json:"href" form:"href"`
 	Icon   string `json:"icon" form:"icon"`
 	Target string `json:"target" form:"target"`
 	Sort   int    `json:"sort" form:"sort"`
