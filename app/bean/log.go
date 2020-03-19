@@ -19,3 +19,11 @@ type Log struct {
 func (Log) TableName() string {
 	return config.Prefix + "log"
 }
+
+type LogResult struct {
+	ID       int64     `json:"id" gorm:"primary_key"`
+	Account  string    `json:"account"`
+	Method   string    `json:"method"`
+	Uri      string    `json:"uri"`
+	CreateAt time.Time `json:"create_at"`
+}

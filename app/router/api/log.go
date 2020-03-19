@@ -7,6 +7,7 @@ import (
 )
 
 func LogList(c *gin.Context) {
+	account := c.DefaultQuery("account", "")
 	method := c.DefaultQuery("method", "GET")
 	uri := c.DefaultQuery("uri", "")
 	pag := c.DefaultQuery("page", "1")
@@ -17,7 +18,7 @@ func LogList(c *gin.Context) {
 		return
 	}
 
-	r, count, err := dao.LogList(method, uri, offset, limit)
+	r, count, err := dao.LogList(account, method, uri, offset, limit)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

@@ -1,0 +1,135 @@
+<div class="layuimini-container layuimini-page-anim">
+  <div class="layuimini-main">
+    <fieldset class="table-search-fieldset">
+      <legend>搜索信息</legend>
+      <div style="margin: 10px 10px 10px 10px">
+        <form class="layui-form layui-form-pane" action="">
+          <div class="layui-form-item">
+            <div class="layui-inline">
+              <label class="layui-form-label">用户姓名</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="username"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">用户性别</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="sex"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">用户城市</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="city"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">用户职业</label>
+              <div class="layui-input-inline">
+                <input
+                  type="text"
+                  name="classify"
+                  autocomplete="off"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+            <div class="layui-inline">
+              <button
+                type="submit"
+                class="layui-btn layui-btn-primary"
+                lay-submit
+                lay-filter="data-search-btn"
+              >
+                <i class="layui-icon"></i> 搜 索
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </fieldset>
+
+    <table
+      class="layui-hide"
+      id="currentTableId"
+      lay-filter="currentTableFilter"
+    ></table>
+  </div>
+</div>
+
+<script>
+  layui.use(["form", "table", "miniPage", "element", "conf"], function() {
+    var $ = layui.jquery,
+      form = layui.form,
+      table = layui.table,
+      config = layui.conf,
+      miniPage = layui.miniPage;
+
+    table.render({
+      elem: "#currentTableId",
+      url: config.server + "/api/log?token=" + sessionStorage["token"],
+
+      defaultToolbar: [
+        "filter",
+        "exports",
+        "print",
+        {
+          title: "提示",
+          layEvent: "LAYTABLE_TIPS",
+          icon: "layui-icon-tips"
+        }
+      ],
+      cols: [
+        [
+          { field: "id", width: 80, title: "ID" },
+          { field: "user_id", title: "用户名" },
+          { field: "method", width: 80, title: "操作" },
+          { field: "uri", title: "路径" },
+          { field: "create_at", title: "操作时间" }
+        ]
+      ],
+      limits: [10, 15, 20, 25, 50, 100],
+      limit: 15,
+      page: true
+    });
+
+    // 监听搜索操作
+    form.on("submit(data-search-btn)", function(data) {
+      var result = JSON.stringify(data.field);
+      layer.alert(result, {
+        title: "最终的搜索信息"
+      });
+
+      //执行搜索重载
+      table.reload(
+        "currentTableId",
+        {
+          page: {
+            curr: 1
+          },
+          where: {
+            searchParams: result
+          }
+        },
+        "data"
+      );
+
+      return false;
+    });
+  });
+</script>
