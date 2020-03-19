@@ -8,7 +8,7 @@ create table sys_role
 insert into sys_role
 values (1, '管理员', 1),
        (2, '操作员', 1);
-
+SELECT setval('sys_role_id_seq', (select max(id) from sys_role), true);
 drop table sys_org;
 create table sys_org
 (
@@ -25,6 +25,7 @@ values (1, 0, '100', '我的组织', 1),
        (4, 1, '100103', 'C部门', 3),
        (5, 4, '100103101', 'C1部门', 1),
        (6, 4, '100103102', 'C2部门', 2);
+SELECT setval('sys_org_id_seq', (select max(id) from sys_org), true);
 drop table sys_entry;
 create table sys_entry
 (
@@ -67,7 +68,7 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1),
        (1300, '日志', 1, 1, '', 'sys/log.html', 'fa fa-list', '_self', 1),
        (1301, '组织列表', 1300, 2, 'GET', '/api/log', '', '', 1),
        (2, '业务管理', 0, 1, '', '', '', '', 1);
-
+SELECT setval('sys_entry_id_seq', (select max(id) from sys_entry), true);
 drop table sys_auth;
 create table sys_auth
 (
@@ -104,7 +105,7 @@ create table sys_user
 
 insert into sys_user(id, account, password, role_id, org_id)
 values (1, 'zhanghua', md5('abc123456'), 1, 1);
-
+SELECT setval('sys_user_id_seq', (select max(id) from sys_user), true);
 -- create table sys_token
 -- (
 --     id        bigserial primary key,

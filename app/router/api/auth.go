@@ -36,15 +36,14 @@ func AuthUpdate(c *gin.Context) {
 		return
 	}
 
-	ids, ok := c.GetPostForm("ids")
-	if !ok {
-		util.AbortNewResultErrorOfClient(c, errors.New("ids参数是以逗号分割的"))
-		return
-	}
+	ids := c.DefaultPostForm("ids", "")
 	idSlice := strings.Split(ids, ",")
 
 	var idInt64 []int64
 	for _, idStr := range idSlice {
+		if idStr == "" {
+			continue
+		}
 		entryId, err := strconv.ParseInt(idStr, 10, 64)
 		if err != nil {
 			util.AbortNewResultErrorOfClient(c, errors.New("ids参数是以逗号分割的"))

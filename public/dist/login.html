@@ -174,7 +174,7 @@
                 },
                 dataType: 'json',
 
-            }).then(function (res) {
+            }).done(function (res) {
                     if (res.code == 0) {
                         sessionStorage['token'] = res.data.AccessToken;
                         sessionStorage['expire'] = res.data.Expire;
@@ -185,7 +185,7 @@
                         layer.msg(res.msg);
                     }
                 }
-            ).catch(function () {
+            ).fail(function () {
                 layer.msg("请求出错");
             });
             return false;

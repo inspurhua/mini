@@ -1,10 +1,352 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="layuimini-container layuimini-page-anim">
+  <div class="layuimini-main">
+    <script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-container">
+          <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加角色</button>
+          </button>
+      </div>
+    </script>
 
-</body>
-</html>
+    <table
+      class="layui-hide"
+      id="currentTableId"
+      lay-filter="currentTableFilter"
+    ></table>
+
+    <script type="text/html" id="currentTableBar">
+      <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="auth">授权</a>
+      <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+    </script>
+  </div>
+</div>
+<script type="text/html" id="tpl_curd">
+  <div class="layuimini-main">
+      <div class="layui-form layuimini-form">
+          <div class="layui-form-item">
+              <label class="layui-form-label required">角色名称</label>
+              <div class="layui-input-block">
+                  <input type="text" name="name"
+                         lay-verify="required"
+                         lay-reqtext="名称不能为空" placeholder="请输入角色名称"
+                         value="{{ d.name || '' }}"
+                         class="layui-input">
+                  <tip>填写角色名称。</tip>
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label class="layui-form-label required">状态</label>
+              <div class="layui-input-block">
+                  <input {{ d.status==2 ?  'checked':'' }} type="radio" name="status" value="2" title="禁用"/>
+                  <input {{ d.status==1 ?  'checked':'' }} type="radio" name="status" value="1" title="正常"/>
+              </div>
+          </div>
+
+          <div class="layui-form-item">
+              <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</script>
+<script type="text/html" id="tpl_treetable">
+  <div style="margin-top:5px;">
+    <button class="layui-btn" id="save">保存</button>
+    <span>当前角色:{{ d.name }}</span>
+  </div>
+  <table id="auth-table" class="layui-table" lay-filter="auth-table"></table>
+</script>
+<script>
+  layui.use(
+    [
+      "form",
+      "table",
+      "miniPage",
+      "element",
+      "conf",
+      "laytpl",
+      "jquery",
+      "treetable"
+    ],
+    function() {
+      var $ = layui.jquery,
+        form = layui.form,
+        table = layui.table,
+        laytpl = layui.laytpl,
+        config = layui.conf,
+        treetable = layui.treetable,
+        miniPage = layui.miniPage;
+      loadTable();
+
+      function loadTable() {
+        table.render({
+          elem: "#currentTableId",
+          url: config.server + "/api/role?token=" + sessionStorage["token"],
+          toolbar: "#toolbarDemo",
+          defaultToolbar: [
+            "filter",
+            "exports",
+            "print",
+            {
+              title: "提示",
+              layEvent: "LAYTABLE_TIPS",
+              icon: "layui-icon-tips"
+            }
+          ],
+          cols: [
+            [
+              { field: "id", title: "ID" },
+              { field: "name", minWidth: 80, title: "角色名称" },
+              {
+                field: "status",
+                width: 80,
+                title: "状态",
+                templet: function(d) {
+                  return d.status == 1 ? "正常" : "禁用";
+                }
+              },
+
+              {
+                title: "操作",
+                minWidth: 120,
+                templet: "#currentTableBar",
+                fixed: "right",
+                align: "center"
+              }
+            ]
+          ],
+          limit: 1000,
+          page: false
+        });
+      }
+      function operate(options) {
+        var options = Object.assign(
+          { event: "add", titile: "添加", url: "", data: {} },
+          options || {}
+        );
+        var data = options.data;
+        var type = options.event == "add" ? "POST" : "PUT";
+        var url =
+          config.server +
+          options.url.replace(/\/$/, "") +
+          (options.event == "add" ? "" : "/" + data.id);
+
+        if (options.event == "delete") {
+          layer.confirm("真的删除吗?", function(index) {
+            $.ajax({
+              type: "DELETE",
+              headers: {
+                token: sessionStorage["token"]
+              },
+              url: url,
+              dataType: "json"
+            })
+              .done(function(res) {
+                if (res.code == 0) {
+                  loadTable();
+                  miniAdmin.success(res.msg);
+                } else {
+                  miniAdmin.error(res.msg);
+                }
+              })
+              .fail(function() {
+                miniAdmin.error("删除出错");
+              });
+            layer.close(index);
+          });
+        } else {
+          var a = $("#tpl_curd")
+            .html()
+            .trim();
+          var content = laytpl(a).render(data);
+          var openWH = miniPage.getOpenWidthHeight();
+
+          var index = layer.open({
+            title: options.title,
+            type: 1,
+            maxmin: true,
+            shadeClose: true,
+            area: [openWH[0] + "px", openWH[1] + "px"],
+            offset: [openWH[2] + "px", openWH[3] + "px"],
+            content: content
+          });
+          $(window).on("resize", function() {
+            layer.full(index);
+          });
+
+          form.render();
+          // 当前弹出层，防止ID被覆盖
+          var parentIndex = layer.index;
+
+          //监听提交
+          form.on("submit(saveBtn)", function(data) {
+            $.ajax({
+              type: type,
+              headers: {
+                token: sessionStorage["token"]
+              },
+              data: data.field,
+              url: url,
+              dataType: "json"
+            })
+              .done(function(res) {
+                if (res.code == 0) {
+                  loadTable();
+                  miniAdmin.success(res.msg);
+                } else {
+                  miniAdmin.error(res.msg);
+                }
+              })
+              .fail(function() {
+                miniAdmin.error("保存出错");
+              });
+            layer.close(parentIndex);
+            return false;
+          });
+        }
+      }
+
+      function loadTreeTable(role_id) {
+        treetable.render({
+          treeColIndex: 1,
+          treeSpid: 0,
+          treeIdName: "id",
+          treePidName: "pid",
+          elem: "#auth-table",
+          url:
+            config.server +
+            "/api/role/" +
+            role_id +
+            "/auth?token=" +
+            sessionStorage["token"],
+          page: false,
+          cols: [
+            [
+              { type: "checkbox" },
+              { field: "title", minWidth: 200, title: "功能" }
+            ]
+          ],
+          done: function(res) {
+            for (var i = 0; i < res.data.length; i++) {
+              if (res.data[i].auth_id > 0) {
+                res.data[i]["LAY_CHECKED"] = true;
+                //找到对应数据改变勾选样式，呈现出选中效果
+                var index = res.data[i]["LAY_TABLE_INDEX"];
+                $(
+                  ".treeTable tr[data-index=" +
+                    index +
+                    '] input[type="checkbox"]'
+                ).prop("checked", true);
+                $(
+                  ".treeTable tr[data-index=" +
+                    index +
+                    '] input[type="checkbox"]'
+                )
+                  .next()
+                  .addClass("layui-form-checked");
+              }
+            }
+
+            var checkStatus = table.checkStatus("auth-table");
+            if (checkStatus.isAll) {
+              $(
+                '.treeTable .layui-table-header th[data-field="0"] input[type="checkbox"]'
+              ).prop("checked", true);
+              $(
+                '.treeTable .layui-table-header th[data-field="0"] input[type="checkbox"]'
+              )
+                .next()
+                .addClass("layui-form-checked");
+            }
+          }
+        });
+      }
+
+      /**
+       * toolbar事件监听
+       */
+      table.on("toolbar(currentTableFilter)", function(obj) {
+        if (obj.event === "add") {
+          // 监听添加操作
+          operate({
+            event: "add",
+            titile: "添加",
+            url: "/api/role",
+            data: { status: 1 }
+          });
+        }
+      });
+
+      table.on("tool(currentTableFilter)", function(obj) {
+        var data = obj.data;
+        if (obj.event === "edit") {
+          operate({
+            event: "edit",
+            titile: "修改",
+            url: "/api/role",
+            data: obj.data
+          });
+        } else if (obj.event === "delete") {
+          operate({
+            event: "delete",
+            titile: "删除",
+            url: "/api/role",
+            data: obj.data
+          });
+        } else if (obj.event === "auth") {
+          var a = $("#tpl_treetable")
+            .html()
+            .trim();
+          var content = laytpl(a).render(data);
+          var openWH = miniPage.getOpenWidthHeight();
+
+          var index = layer.open({
+            title: "授权",
+            type: 1,
+            maxmin: true,
+            shadeClose: true,
+            area: [openWH[0] + "px", openWH[1] + "px"],
+            offset: [openWH[2] + "px", openWH[3] + "px"],
+            content: content
+          });
+
+          loadTreeTable(data.id);
+          $(window).on("resize", function() {
+            layer.full(index);
+          });
+
+          var parentIndex = layer.index;
+          //监听提交
+          $("#save").on("click", function() {
+            var checkStatus = table.checkStatus("auth-table");
+            var ids = checkStatus.data.reduce(function(a,b){return a+','+b.id},'').substring(1);
+            debugger;
+            $.ajax({
+              type: "PUT",
+              headers: {
+                token: sessionStorage["token"]
+              },
+              data: { ids:ids },
+              url: config.server +'/api/role/'+obj.data.id+'/auth',
+              dataType: "json"
+            })
+              .done(function(res) {
+                if (res.code == 0) {
+                  loadTable();
+                  miniAdmin.success(res.msg);
+                } else {
+                  miniAdmin.error(res.msg);
+                }
+              })
+              .fail(function() {
+                miniAdmin.error("保存出错");
+              });
+            layer.close(parentIndex);
+            return false;
+          });
+        }
+      });
+    }
+  );
+</script>
