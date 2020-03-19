@@ -42,7 +42,7 @@ func Login(c *gin.Context) {
 
 	token, err := jwt.CreateToken(claims)
 
-	c.JSON(200, util.NewResultOKofRead(gin.H{"AccessToken": token, "Expire": expire}, 1))
+	c.JSON(200, util.NewResultOKofRead(gin.H{"AccessToken": token, "Expire": expire, "Account": u.Account}, 1))
 }
 
 func Refresh(c *gin.Context) {

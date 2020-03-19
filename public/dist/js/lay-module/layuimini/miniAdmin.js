@@ -40,6 +40,9 @@ layui.define(["jquery", "miniMenu", "miniPage", "miniTheme"], function (exports)
             options.pageAnim = options.pageAnim || false;
             $.getJSON(options.iniUrl, function (res) {
                 if (res.code != 0) {
+                    sessionStorage.removeItem('token');
+                    sessionStorage.removeItem('expire');
+                    sessionStorage.removeItem('account');
                     location.href = "/login.html"
                 }
                 data = res.data;

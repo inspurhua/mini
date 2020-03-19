@@ -176,8 +176,10 @@
 
             }).done(function (res) {
                     if (res.code == 0) {
+                        debugger;
                         sessionStorage['token'] = res.data.AccessToken;
                         sessionStorage['expire'] = res.data.Expire;
+                        sessionStorage['account'] = res.data.Account;
                         layer.msg('登录成功', function () {
                             window.location = '/index.html';
                         });

@@ -58,12 +58,12 @@
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;">admin</a>
+                    <a id="user" href="javascript:;">admin</a>
                     <dl class="layui-nav-child">
-                        <dd>
+                        <!-- <dd>
                             <a href="javascript:;" layuimini-content-href="sys/user-setting.html" data-title="基本资料"
                                data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
-                        </dd>
+                        </dd> -->
                         <dd>
                             <a href="javascript:;" layuimini-content-href="sys/user-password.html" data-title="修改密码"
                                data-icon="fa fa-gears">修改密码</a>
@@ -122,8 +122,11 @@
             layer = layui.layer,
             config = layui.conf;
         miniAdmin = layui.miniAdmin;
-
-
+        //检查登录
+        if(!sessionStorage.getItem('token')){
+            window.location = '/login.html';
+        }
+        $('#user').text(  sessionStorage.getItem('account'));
         var options = {
             iniUrl: config.server + "/api/menu?token=" + sessionStorage['token'],    // 初始化接口
             clearUrl: "api/clear.json", // 缓存清理接口
@@ -139,6 +142,7 @@
         $('.login-out').on("click", function () {
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('expire');
+            sessionStorage.removeItem('account');
             layer.msg('退出登录成功', function () {
                 window.location = '/login.html';
             });
