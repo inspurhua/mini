@@ -3,6 +3,7 @@ package dao
 import (
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/config"
+	"strings"
 	"time"
 )
 
@@ -14,14 +15,16 @@ type LogResult struct {
 	CreateAt time.Time `json:"create_at"`
 }
 
-func LogList(account, method, uri string, offset, limit int64) (e []bean.LogResult, count int, err error) {
+func LogList(date, account, method, uri string, offset, limit int64) (e []bean.LogResult, count int, err error) {
+	dd := strings.Split(date, " - ")
 
 	row := db.Raw("select count(a.id) from "+
 		config.Prefix+"log a left join "+config.Prefix+"user b "+
-		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=?",
+		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=? "+
+		" and a.create_at >= ? and a.create_at <= ?",
 		"%"+account+"%",
 		"%"+uri+"%",
-		method,
+		method, dd[0], dd[1],
 	).Row()
 	row.Scan(&count)
 
@@ -31,10 +34,11 @@ func LogList(account, method, uri string, offset, limit int64) (e []bean.LogResu
 
 	err = db.Raw("select b.account,a.id,a.method,a.uri,a.create_at from "+
 		config.Prefix+"log a left join "+config.Prefix+"user b "+
-		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=? offset ? limit ?",
+		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=?"+
+		" and a.create_at >= ? and a.create_at <= ?  order by id desc offset ? limit ?",
 		"%"+account+"%",
 		"%"+uri+"%",
-		method, offset, limit,
+		method, dd[0], dd[1], offset, limit,
 	).Scan(&e).Error
 
 	return
