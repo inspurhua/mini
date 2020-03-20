@@ -28,7 +28,8 @@ func RoleCreate(c *gin.Context) {
 }
 
 func RoleList(c *gin.Context) {
-	r, err := dao.RoleList()
+	roleId, _ := c.MustGet("ROLE_ID").(int64)
+	r, err := dao.RoleList(roleId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

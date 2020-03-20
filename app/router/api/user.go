@@ -32,16 +32,24 @@ func UserCreate(c *gin.Context) {
 func UserList(c *gin.Context) {
 	account := c.DefaultQuery("account", "")
 
-	roleId, err := strconv.Atoi(c.DefaultQuery("role_id", ""))
+	roleId, err := strconv.ParseInt(c.DefaultQuery("role", ""), 10, 64)
 
 	if err != nil {
 		roleId = 0
 	}
-
-	orgId, err := strconv.Atoi(c.DefaultQuery("org_id", ""))
-	if err != nil {
-		orgId = 0
+	userRoleId, _ := c.MustGet("ROLE_ID").(int64)
+	userOrgId, _ := c.MustGet("ORG_ID").(int64)
+	//admin
+	orgCode := ""
+	if userRoleId != 1 {
+		org, err := dao.OrgRead(userOrgId)
+		if err != nil {
+			util.AbortNewResultErrorOfServer(c, err)
+			return
+		}
+		orgCode = org.Code
 	}
+
 	pag := c.DefaultQuery("page", "1")
 	lim := c.DefaultQuery("limit", "20")
 	offset, limit, err := util.PageLimit(pag, lim)
@@ -50,7 +58,7 @@ func UserList(c *gin.Context) {
 		return
 	}
 
-	r, count, err := dao.UserList(account, roleId, orgId, offset, limit)
+	r, count, err := dao.UserList(account, roleId, orgCode, offset, limit)
 
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -65,6 +73,11 @@ func UserDelete(c *gin.Context) {
 	id, err := strconv.ParseInt(UserId, 10, 64)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	tokenUid, _ := c.MustGet("UID").(int64)
+	if tokenUid == id {
+		util.AbortNewResultErrorOfClient(c, errors.New("不允许删除自己"))
 		return
 	}
 	err = dao.UserDelete(id)

@@ -3,6 +3,7 @@ package dao
 import (
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/config"
+	"time"
 )
 
 func Login(account, password string) (u bean.User, err error) {
@@ -11,22 +12,40 @@ func Login(account, password string) (u bean.User, err error) {
 	return
 }
 
-func UserList(account string, roleId, OrgId int, offset, limit int64) (r []bean.User, count int, err error) {
-	db := db.Model(&bean.User{})
-	if len(account) > 0 {
-		db = db.Where("account like ? ", "%"+account+"%")
-	}
+func UserList(account string, roleId int64, orgCode string, offset, limit int64) (r []bean.UserResponse, count int, err error) {
+	sql1 := "select count(u.id) from "+config.Prefix+"user u left join "+config.Prefix+"org o on u.org_id=o.id"+
+		" where u.account like ? "
+	param1 := []interface{}{"%" + account + "%"}
+
+	sql := "select u.id,u.account,u.status,u.role_id,u.org_id,u.update_at,r.name as role,o.name as org from " + config.Prefix + "user u " +
+		" left join " + config.Prefix + "role r on u.role_id = r.id " +
+		" left join " + config.Prefix + "org o on u.org_id = o.id " +
+		" where u.account like ? "
+	  param := []interface{}{"%" + account + "%"}
+
+
 	if roleId > 0 {
-		db = db.Where("role_id = ?", roleId)
+		sql1 += "and u.role_id = ? "
+		param1 = append(param1, roleId)
+
+		sql += "and u.role_id = ? "
+		param = append(param, roleId)
 	}
-	if OrgId > 0 {
-		db = db.Where("org_id = ?", OrgId)
+	if len(orgCode) > 0 {
+		sql1 += " and o.code like ? "
+		param1 = append(param1, orgCode+"%")
+
+		sql += " and o.code like ? "
+		param = append(param, orgCode+"%")
 	}
-	err = db.Count(&count).Error
+	err = db.Raw(sql1,param1...).Row().Scan(&count)
 	if err != nil {
 		return
 	}
-	err = db.Offset(offset).Limit(limit).Find(&r).Error
+	sql += " order by u.update_at desc offset ? limit ?"
+	param = append(param, offset, limit)
+	err = db.New().Raw(sql, param...).Scan(&r).Error
+
 	return
 }
 
@@ -47,6 +66,7 @@ func UserRead(id int64) (result bean.User, err error) {
 }
 
 func UserUpdate(User bean.User) (result bean.User, err error) {
+	User.UpdateAt = time.Now()
 	err = db.Model(&result).Update(User).Error
 	return
 }

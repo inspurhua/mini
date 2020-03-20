@@ -33,3 +33,14 @@ type User struct {
 func (User) TableName() string {
 	return config.Prefix + "user"
 }
+
+type UserResponse struct {
+	ID       int64     `gorm:"primary_key" json:"id"`
+	Account  string    `json:"account" form:"account"`
+	Status   int       `json:"status" form:"status"`
+	Role     string    `json:"role" form:"role"`
+	Org      string    `json:"org" form:"org"`
+	RoleId   int64     `json:"role_id" form:"role_id"`
+	OrgId    int64     `json:"org_id" form:"org_id"`
+	UpdateAt time.Time `json:"update_at"`
+}

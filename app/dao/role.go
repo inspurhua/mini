@@ -2,7 +2,11 @@ package dao
 
 import "huage.tech/mini/app/bean"
 
-func RoleList() (r []bean.Role, err error) {
+func RoleList(Me int64) (r []bean.Role, err error) {
+	db = db.Model(&bean.Role{})
+	if Me != 1 {
+		db.Where("id != ?", 1)
+	}
 	err = db.Find(&r).Error
 	return
 }

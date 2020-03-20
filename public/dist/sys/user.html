@@ -1,0 +1,324 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="account" autocomplete="off" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色</label>
+                            <div class="layui-input-block">
+                                <select id="role" name="role">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                lay-filter="data-search-btn">
+                                <i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-container">
+          <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加用户 </button>
+      </div>
+    </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+      <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+    </script>
+    </div>
+</div>
+<script type="text/html" id="tpl_curd">
+  <div class="layuimini-main">
+      <div class="layui-form layuimini-form">
+          <div class="layui-form-item">
+              <label class="layui-form-label required">账号</label>
+              <div class="layui-input-block">
+                  <input type="text" name="account"
+                         lay-verify="required"
+                         lay-reqtext="账号不能为空" placeholder="请输入账号名称"
+                         value="{{ d.account || '' }}"
+                         class="layui-input">
+                  <tip>填写账号名称。</tip>
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label class="layui-form-label required">状态</label>
+              <div class="layui-input-block">
+                  <input {{ d.status==2 ?  'checked':'' }} type="radio" name="status" value="2" title="禁用"/>
+                  <input {{ d.status==1 ?  'checked':'' }} type="radio" name="status" value="1" title="正常"/>
+              </div>
+          </div>
+
+          <div class="layui-form-item">
+              <label class="layui-form-label required">密码</label>
+              <div class="layui-input-block">
+                  <input type="text" name="password"
+                  lay-verify="required"
+                  lay-reqtext="密码不能为空" placeholder="请输入密码"
+                  value="{{ d.password || '' }}"
+                  class="layui-input">
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label class="layui-form-label required">角色</label>
+              <div class="layui-input-block">
+                <select id="role1" name="role" lay-verify="required"   lay-reqtext="角色不能为空">
+                  <option value=""></option>
+                </select>
+              </div>
+         </div>
+          <div class="layui-form-item">
+              <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</script>
+<script>
+    layui.use(
+        ["form", "table", "miniPage", "element", "conf", "jquery", "laytpl"],
+        function () {
+            var $ = layui.jquery,
+                form = layui.form,
+                table = layui.table,
+                config = layui.conf,
+                laytpl = layui.laytpl,
+                miniPage = layui.miniPage;
+
+            loadTable();
+            loadRole("#role");
+
+            function loadRole(dom, value) {
+                $.ajax({
+                    type: "GET",
+                    headers: {
+                        token: sessionStorage["token"]
+                    },
+                    url: config.server + "/api/role",
+                    dataType: "json"
+                }).done(function (res) {
+                    if (res.code == 0) {
+                        let option = "";
+                        for (const role of res.data) {
+                            option +=
+                                '<option value="' +
+                                role.id +
+                                '" ' +
+                                (role.id == value ? "selected" : "") +
+                                ">" +
+                                role.name +
+                                "</option>";
+                        }
+                        $(dom).append(option);
+                    }
+                    form.render();
+                });
+            }
+            function loadTable() {
+                table.render({
+                    elem: "#currentTableId",
+                    url: config.server + "/api/user?token=" + sessionStorage["token"],
+                    toolbar: "#toolbarDemo",
+                    defaultToolbar: [
+                        "filter",
+                        "exports",
+                        "print",
+                        {
+                            title: "提示",
+                            layEvent: "LAYTABLE_TIPS",
+                            icon: "layui-icon-tips"
+                        }
+                    ],
+                    cols: [
+                        [
+                            { field: "id", title: "ID" },
+                            { field: "account", minWidth: 80, title: "账号" },
+                            {
+                                field: "status",
+                                width: 80,
+                                title: "状态",
+                                templet: function (d) {
+                                    return d.status == 1 ? "正常" : "禁用";
+                                }
+                            },
+                            { field: "role", minWidth: 80, title: "角色" },
+                            { field: "org", minWidth: 80, title: "部门" },
+                            {
+                                title: "操作",
+                                minWidth: 120,
+                                templet: "#currentTableBar",
+                                fixed: "right",
+                                align: "center"
+                            }
+                        ]
+                    ],
+                    limits: [10, 15, 20, 25, 50, 100],
+                    limit: 15,
+                    page: true
+                });
+            }
+            function operate(options) {
+                var options = Object.assign(
+                    { event: "add", titile: "添加", url: "", data: {} },
+                    options || {}
+                );
+                var data = options.data;
+                var type = options.event == "add" ? "POST" : "PUT";
+                var url =
+                    config.server +
+                    options.url.replace(/\/$/, "") +
+                    (options.event == "add" ? "" : "/" + data.id);
+
+                if (options.event == "delete") {
+                    layer.confirm("真的删除吗?", function (index) {
+                        $.ajax({
+                            type: "DELETE",
+                            headers: {
+                                token: sessionStorage["token"]
+                            },
+                            url: url,
+                            dataType: "json"
+                        })
+                            .done(function (res) {
+                                if (res.code == 0) {
+                                    loadTable();
+                                    miniAdmin.success(res.msg);
+                                } else {
+                                    miniAdmin.error(res.msg);
+                                }
+                            })
+                            .fail(function () {
+                                miniAdmin.error("删除出错");
+                            });
+                        layer.close(index);
+                    });
+                } else {
+                    var a = $("#tpl_curd")
+                        .html()
+                        .trim();
+                    var content = laytpl(a).render(data);
+                    var openWH = miniPage.getOpenWidthHeight();
+
+                    var index = layer.open({
+                        title: options.title,
+                        type: 1,
+                        maxmin: true,
+                        shadeClose: true,
+                        area: [openWH[0] + "px", openWH[1] + "px"],
+                        offset: [openWH[2] + "px", openWH[3] + "px"],
+                        content: content
+                    });
+                    options.callback && options.callback();
+                    $(window).on("resize", function () {
+                        layer.full(index);
+                    });
+
+                    form.render();
+                    // 当前弹出层，防止ID被覆盖
+                    var parentIndex = layer.index;
+
+                    //监听提交
+                    form.on("submit(saveBtn)", function (data) {
+                        $.ajax({
+                            type: type,
+                            headers: {
+                                token: sessionStorage["token"]
+                            },
+                            data: data.field,
+                            url: url,
+                            dataType: "json"
+                        })
+                            .done(function (res) {
+                                if (res.code == 0) {
+                                    loadTable();
+                                    miniAdmin.success(res.msg);
+                                } else {
+                                    miniAdmin.error(res.msg);
+                                }
+                            })
+                            .fail(function () {
+                                miniAdmin.error("保存出错");
+                            });
+                        layer.close(parentIndex);
+                        return false;
+                    });
+                }
+            }
+
+            // 监听搜索操作
+            form.on("submit(data-search-btn)", function (data) {
+                //执行搜索重载
+                table.reload(
+                    "currentTableId",
+                    {
+                        page: {
+                            curr: 1
+                        },
+                        where: data.field
+                    },
+                    "data"
+                );
+
+                return false;
+            });
+
+            /**
+             * toolbar事件监听
+             */
+            table.on("toolbar(currentTableFilter)", function (obj) {
+                if (obj.event === "add") {
+                    // 监听添加操作
+                    operate({
+                        event: "add",
+                        titile: "添加",
+                        url: "/api/user",
+                        data: { status: 1 },
+                        callback: function () {
+                            loadRole("#role1");
+                        }
+                    });
+                }
+            });
+
+            table.on("tool(currentTableFilter)", function (obj) {
+                var data = obj.data;
+                if (obj.event === "edit") {
+                    operate({
+                        event: "edit",
+                        titile: "修改",
+                        url: "/api/user",
+                        data: obj.data,
+                        callback: function () {
+                            loadRole("#role1", obj.data.role_id);
+                        }
+                    });
+                } else if (obj.event === "delete") {
+                    operate({
+                        event: "delete",
+                        titile: "删除",
+                        url: "/api/user",
+                        data: obj.data
+                    });
+                }
+            });
+        }
+    );
+</script>
