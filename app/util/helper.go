@@ -41,7 +41,7 @@ func TreeOfOrg(rows []*bean.OrgTree) (tree []*bean.OrgTree) {
 	}
 	for _, v := range rows {
 		if parent, ok := tmp[v.PId]; ok {
-			parent.Child = append(parent.Child, v)
+			parent.Children = append(parent.Children, v)
 		} else {
 			tree = append(tree, v)
 		}

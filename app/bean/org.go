@@ -16,7 +16,7 @@ func (Org) TableName() string {
 
 type OrgTree struct {
 	*Org
-	Child []*OrgTree `json:"child" gorm:"-"`
+	Children []*OrgTree `json:"children" gorm:"-"`
 }
 
 func (OrgTree) TableName() string {
