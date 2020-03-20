@@ -13,7 +13,7 @@ func Login(account, password string) (u bean.User, err error) {
 }
 
 func UserList(account string, roleId int64, orgCode string, offset, limit int64) (r []bean.UserResponse, count int, err error) {
-	sql1 := "select count(u.id) from "+config.Prefix+"user u left join "+config.Prefix+"org o on u.org_id=o.id"+
+	sql1 := "select count(u.id) from " + config.Prefix + "user u left join " + config.Prefix + "org o on u.org_id=o.id" +
 		" where u.account like ? "
 	param1 := []interface{}{"%" + account + "%"}
 
@@ -21,8 +21,7 @@ func UserList(account string, roleId int64, orgCode string, offset, limit int64)
 		" left join " + config.Prefix + "role r on u.role_id = r.id " +
 		" left join " + config.Prefix + "org o on u.org_id = o.id " +
 		" where u.account like ? "
-	  param := []interface{}{"%" + account + "%"}
-
+	param := []interface{}{"%" + account + "%"}
 
 	if roleId > 0 {
 		sql1 += "and u.role_id = ? "
@@ -38,7 +37,7 @@ func UserList(account string, roleId int64, orgCode string, offset, limit int64)
 		sql += " and o.code like ? "
 		param = append(param, orgCode+"%")
 	}
-	err = db.Raw(sql1,param1...).Row().Scan(&count)
+	err = db.Raw(sql1, param1...).Row().Scan(&count)
 	if err != nil {
 		return
 	}
@@ -50,8 +49,13 @@ func UserList(account string, roleId int64, orgCode string, offset, limit int64)
 }
 
 func UserCreate(User bean.User) (result bean.User, err error) {
+	now := time.Now()
+	User.CreateAt = now
+	User.UpdateAt = now
 	result = User
+
 	err = db.Create(&result).Error
+	result.Password =""
 	return
 }
 
@@ -62,11 +66,13 @@ func UserDelete(id int64) (err error) {
 
 func UserRead(id int64) (result bean.User, err error) {
 	err = db.Where("id=?", id).First(&result).Error
+	result.Password =""
 	return
 }
 
 func UserUpdate(User bean.User) (result bean.User, err error) {
 	User.UpdateAt = time.Now()
 	err = db.Model(&result).Update(User).Error
+	result.Password =""
 	return
 }

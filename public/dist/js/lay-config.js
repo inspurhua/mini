@@ -18,6 +18,7 @@ layui.config({
     miniPage: "layuimini/miniPage", // layuimini 单页扩展
     miniTheme: "layuimini/miniTheme", // layuimini 主题扩展
     miniTongji: "layuimini/miniTongji", // layuimini 统计扩展
+    miniCurd: "layuimini/miniCurd", // layuimini 表单扩展
     step: 'step-lay/step', // 分步表单扩展
     treetable: 'treetable-lay/treetable', //table树形扩展
     tableSelect: 'tableSelect/tableSelect', // table选择扩展

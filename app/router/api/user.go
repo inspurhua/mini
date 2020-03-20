@@ -119,6 +119,9 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
+	if len(form.Password) > 0 {
+		form.Password = util.Md5(config.JwtSecret + form.Password)
+	}
 
 	r, err := dao.UserUpdate(form)
 	if err != nil {

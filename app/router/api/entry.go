@@ -94,7 +94,8 @@ func EntryUpdate(c *gin.Context) {
 }
 
 func Entries(c *gin.Context) {
-	v, err := dao.Entries()
+	roleId,_ := c.MustGet( "ROLE_ID" ).(int64)
+	v, err := dao.Entries(roleId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

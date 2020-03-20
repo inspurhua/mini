@@ -30,15 +30,21 @@ func EntryUpdate(e bean.Entry) (result bean.Entry, err error) {
 	return
 }
 
-func Entries() (result []*bean.EntryTree, err error) {
-	err = db.Model(&bean.EntryTree{}).
-		Where("type=?", 1).
-		Order("sort").
-		Find(&result).Error
+func Entries(roleId int64) (result []*bean.EntryTree, err error) {
+	if roleId == 1 {
+		err = db.Model(&bean.EntryTree{}).
+			Where("type=?", 1).
+			Order("sort").
+			Find(&result).Error
+	} else {
+		err = db.Raw("select e.* from sys_entry e right join sys_auth a"+
+			" on e.id = a.entry_id and a.role_id=? where e.type=1 order by e.sort", roleId).Scan(&result).Error
+	}
+
 	return
 }
 
 func FindEntry(method, href string) (entry bean.Entry, err error) {
-	err = db.Where("method=? and href=?", method, href).First(entry).Error
+	err = db.Where("method=? and href=?", method, href).First(&entry).Error
 	return
 }
