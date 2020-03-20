@@ -5,7 +5,10 @@ import (
 )
 
 func OrgList() (e []bean.Org, err error) {
-	err = db.Order("sort").Find(&e).Error
+	err = db.
+		Order("sort").
+		Find(&e).Error
+
 	return
 }
 
@@ -30,10 +33,19 @@ func OrgUpdate(e bean.Org) (result bean.Org, err error) {
 	return
 }
 
-func OrgTree() (result []*bean.OrgTree, err error) {
-	err = db.Model(&bean.OrgTree{}).
-		Order("sort").
-		Find(&result).Error
+func OrgTree(roleId int64, code string) (result []*bean.OrgTree, err error) {
+
+	if roleId == 1 {
+		err = db.Model(&bean.OrgTree{}).
+			Order("sort").
+			Find(&result).Error
+	} else {
+		err = db.Model(&bean.OrgTree{}).
+			Where("code like ?", code+"%").
+			Order("sort").
+			Find(&result).Error
+	}
+
 	return
 }
 

@@ -102,7 +102,11 @@ func OrgList(c *gin.Context) {
 }
 
 func OrgTree(c *gin.Context) {
-	v, err := dao.OrgTree()
+	roleId, _ := c.MustGet("ROLE_ID").(int64)
+	orgId, _ := c.MustGet("ORG_ID").(int64)
+	org, _ := dao.OrgRead(orgId)
+
+	v, err := dao.OrgTree(roleId, org.Code)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
