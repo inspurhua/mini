@@ -27,7 +27,9 @@ type tokenError struct {
 func HwToken() (token string, err error) {
 	expire := dao.GetConfig("HwExpireAt")
 	ex, err := time.Parse("2006-01-02 15:04:05", expire)
-	if ex.Sub(time.Now()) > 10*time.Minute {
+	sh, _ := time.LoadLocation("Asia/Shanghai")
+	now := time.Now().In(sh)
+	if ex.Sub(now) > 10*time.Minute {
 		token = dao.GetConfig("HwToken")
 		return
 	}
