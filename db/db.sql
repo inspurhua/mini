@@ -1,4 +1,4 @@
- drop table if exists  sys_role;
+drop table if exists sys_role;
 create table sys_role
 (
     id     bigserial primary key,
@@ -9,7 +9,7 @@ insert into sys_role
 values (1, '管理员', 1),
        (2, '操作员', 1);
 SELECT setval('sys_role_id_seq', (select max(id) from sys_role), true);
- drop table if exists  sys_org;
+drop table if exists sys_org;
 create table sys_org
 (
     id   bigserial primary key,
@@ -26,7 +26,7 @@ values (1, 0, '100', '我的组织', 1),
        (5, 4, '100103101', 'C1部门', 1),
        (6, 4, '100103102', 'C2部门', 2);
 SELECT setval('sys_org_id_seq', (select max(id) from sys_org), true);
- drop table if exists  sys_entry;
+drop table if exists sys_entry;
 create table sys_entry
 (
     id     bigserial primary key,
@@ -34,7 +34,7 @@ create table sys_entry
     pid    integer,
     type   integer default 1,--1菜单2功能
     method text,
-    href    text,
+    href   text,
     icon   text,
     target text    default '_self',
     sort   int
@@ -69,7 +69,7 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1),
        (1301, '组织列表', 1300, 2, 'GET', '/api/log', '', '', 1),
        (2, '业务管理', 0, 1, '', '', '', '', 1);
 SELECT setval('sys_entry_id_seq', (select max(id) from sys_entry), true);
- drop table if exists  sys_auth;
+drop table if exists sys_auth;
 create table sys_auth
 (
     id       bigserial primary key,
@@ -78,7 +78,7 @@ create table sys_auth
 );
 
 
- drop table if exists  sys_user;
+drop table if exists sys_user;
 create table sys_user
 (
     id        bigserial primary key,
@@ -116,7 +116,7 @@ SELECT setval('sys_user_id_seq', (select max(id) from sys_user), true);
 --     exp       integer,
 --     create_at timestamp without time zone default localtimestamp(0)
 -- );
- drop table if exists  sys_file;
+drop table if exists sys_file;
 create table sys_file
 (
     id        bigserial primary key,
@@ -127,7 +127,7 @@ create table sys_file
     create_at timestamp without time zone default localtimestamp(0)
 );
 
- drop table if exists  sys_log;
+drop table if exists sys_log;
 create table sys_log
 (
     id        bigserial primary key,
@@ -138,6 +138,14 @@ create table sys_log
     ua        text,
     method    text,
     create_at timestamp without time zone default localtimestamp(0)
+);
+
+drop table if exists sys_config;
+create table sys_config
+(
+    id   bigserial primary key,
+    key  text,
+    data text
 );
 
 
