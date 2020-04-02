@@ -11,6 +11,8 @@ func NewRouter() *gin.Engine {
 	r := gin.New()
 
 	r.GET("/test", api.Test)
+	r.GET("/d", api.DeviceList)
+	r.POST("/d/:device_id", api.DeviceCommand)
 
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())

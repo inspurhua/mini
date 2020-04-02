@@ -2,78 +2,39 @@ package api
 
 import (
 	"errors"
-	"github.com/go-resty/resty/v2"
-	"huage.tech/mini/app/dao"
-	"time"
+	"github.com/gin-gonic/gin"
+	"huage.tech/mini/app/service"
+	"huage.tech/mini/app/util"
 )
 
-type errorData struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Title   string `json:"title"`
-}
-type tokenData struct {
-	ExpiresAt time.Time `json:"expires_at"`
-	IssuedAt  time.Time `json:"issued_at"`
-}
-type tokenSuccess struct {
-	Token tokenData `json:"token"`
-}
-
-type tokenError struct {
-	Error errorData `json:"error"`
-}
-
-func HwToken() (token string, err error) {
-	expire := dao.GetConfig("HwExpireAt")
-	ex, err := time.Parse("2006-01-02 15:04:05", expire)
-	sh, _ := time.LoadLocation("Asia/Shanghai")
-	now := time.Now().In(sh)
-	if ex.Sub(now) > 10*time.Minute {
-		token = dao.GetConfig("HwToken")
-		return
-	}
-
-	client := resty.New()
-	resOK := tokenSuccess{}
-	resErr := tokenError{}
-	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(`{
-    "auth": {
-        "identity": {
-            "methods": [
-                "password"
-            ],
-            "password": {
-                "user": {
-                    "name": "aczhanghua",
-                    "password": "sdfihua1",
-                    "domain": {
-                        "name": "aczhanghua"
-                    }
-                }
-            }
-        },
-        "scope": {
-            "project": {
-                "name": "cn-north-4"
-            }
-        }
-    }
-}`).SetResult(&resOK).SetError(&resErr).
-		Post("https://iam.cn-north-4.myhuaweicloud.com/v3/auth/tokens")
+func DeviceList(c *gin.Context) {
+	data, err := service.GetDevices(0, 50)
 	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	if resErr.Error.Code > 0 {
-		err = errors.New(resErr.Error.Title + resErr.Error.Message)
+	c.JSON(200, util.NewResultOKofRead(data, 1))
+}
+
+
+func DeviceCommand(c *gin.Context) {
+	deviceId := c.Param("device_id")
+	if deviceId == "" {
+		util.AbortNewResultErrorOfClient(c, errors.New("需要传入设备id"))
+		return
+	}
+	var form service.HwCommand
+	err := c.ShouldBind(&form)
+	if err != nil {
+		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
 
-	token = resp.Header().Get("X-Subject-Token")
-	dao.SetConfig("HwToken", token)
-	dao.SetConfig("HwExpireAt", resOK.Token.ExpiresAt.Format("2006-01-02 15:04:05"))
+	result, err := service.SendDeviceCommand(deviceId, form)
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
+	c.JSON(200, util.NewResultOKofWrite(result, 1))
 
-	return
 }
