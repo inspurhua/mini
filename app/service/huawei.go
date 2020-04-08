@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"huage.tech/mini/app/dao"
 	"strconv"
 	"time"
 )
@@ -65,12 +64,12 @@ type HwCommandResult struct {
 }
 
 func HwToken() (token string, err error) {
-	expire := dao.GetConfig("HwExpireAt")
+	expire := GetConfig("HwExpireAt")
 	ex, err := time.Parse("2006-01-02 15:04:05", expire)
 	sh, _ := time.LoadLocation("Asia/Shanghai")
 	now := time.Now().In(sh)
 	if ex.Sub(now) > 10*time.Minute {
-		token = dao.GetConfig("HwToken")
+		token = GetConfig("HwToken")
 		return
 	}
 
@@ -112,16 +111,16 @@ func HwToken() (token string, err error) {
 	}
 
 	token = resp.Header().Get("X-Subject-Token")
-	dao.SetConfig("HwToken", token)
-	dao.SetConfig("HwProjectId", resOK.Token.Project.Id)
-	dao.SetConfig("HwExpireAt", resOK.Token.ExpiresAt.Format("2006-01-02 15:04:05"))
+	SetConfig("HwToken", token)
+	SetConfig("HwProjectId", resOK.Token.Project.Id)
+	SetConfig("HwExpireAt", resOK.Token.ExpiresAt.Format("2006-01-02 15:04:05"))
 
 	return
 }
 func GetProducts(offset, limit int64) (devices []SimpleDevice, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := dao.GetConfig("HwProjectId")
+	project := GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -144,7 +143,7 @@ func GetProducts(offset, limit int64) (devices []SimpleDevice, err error) {
 func GetDevices(offset, limit int64) (devices []SimpleDevice, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := dao.GetConfig("HwProjectId")
+	project := GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -168,7 +167,7 @@ func GetDevices(offset, limit int64) (devices []SimpleDevice, err error) {
 func GetProductInfo(device_id string) (result string, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := dao.GetConfig("HwProjectId")
+	project := GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -187,7 +186,7 @@ func GetProductInfo(device_id string) (result string, err error) {
 func SendDeviceCommand(device_id string, cmd HwCommand) (result HwCommandResult, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := dao.GetConfig("HwProjectId")
+	project := GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
