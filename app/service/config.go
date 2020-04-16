@@ -2,19 +2,29 @@ package service
 
 import (
 	"huage.tech/mini/app/bean"
+	"sync"
 )
 
-var conf = make(map[string]string)
+type Config struct {
+	Data map[string]string
+	Lock sync.RWMutex
+}
+
+var conf = Config{
+	Data: make(map[string]string),
+}
 
 func GetConfig(key string) (data string) {
-	if value, ok := conf[key]; ok {
+	if value, ok := conf.Data[key]; ok {
 		data = value
 	}
 	return
 }
 
 func SetConfig(key, data string) (c bean.Config, err error) {
-	conf[key] = data
+	conf.Lock.Lock()
+	defer conf.Lock.Unlock()
+	conf.Data[key] = data
 	c = bean.Config{
 		ID:   101,
 		Key:  key,
