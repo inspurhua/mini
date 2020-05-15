@@ -4,32 +4,6 @@ import (
 	"huage.tech/mini/app/bean"
 )
 
-//func EntryList() (e []bean.Entry, err error) {
-//	err = db.Find(&e).Error
-//	return
-//}
-
-//func EntryCreate(e bean.Entry) (result bean.Entry, err error) {
-//	result = e
-//	err = db.Create(&result).Error
-//	return
-//}
-//
-//func EntryDelete(id int64) (err error) {
-//	err = db.Where("id=?", id).Delete(&bean.Entry{}).Error
-//	return
-//}
-//
-//func EntryRead(id int64) (result bean.Entry, err error) {
-//	err = db.Where("id=?", id).First(&result).Error
-//	return
-//}
-//
-//func EntryUpdate(e bean.Entry) (result bean.Entry, err error) {
-//	err = db.Model(&result).Update(e).Error
-//	return
-//}
-
 func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 	//超级管理员
 	if roleId == 1 && tenantId == 1 {

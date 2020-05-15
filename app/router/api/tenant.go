@@ -44,7 +44,7 @@ func TenantList(c *gin.Context) {
 		return
 	}
 
-	r, err := dao.TenantList(TenantId)
+	r, err := dao.TenantList()
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

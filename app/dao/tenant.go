@@ -1,12 +1,8 @@
 package dao
 
 import "huage.tech/mini/app/bean"
-//TODO 实现锁有数据库方法,参考db.sql的解释
-func TenantList(TenantId int64) (r []bean.Tenant, err error) {
-	if TenantId != 1 {
-		err = db.Where("id != ?", 1).Find(&r).Error
-		return
-	}
+
+func TenantList() (r []bean.Tenant, err error) {
 	err = db.Find(&r).Error
 	return
 }
@@ -14,11 +10,30 @@ func TenantList(TenantId int64) (r []bean.Tenant, err error) {
 func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 	result = Tenant
 	err = db.Create(&result).Error
-	return
-}
+	if err != nil {
+		return
+	}
+	r, err := RoleCreate(bean.Role{
+		Name:   result.Name + "admin",
+		Status: 1,
+	})
+	if err != nil {
+		return
+	}
+	o, err := OrgCreate(bean.Org{
+		Name: result.Name,
+		Code: "100",
+		PId:  0,
+		Sort: 0,
+	})
+	if err != nil {
+		return
+	}
+	result.RoleAdmin = r.ID
+	result.RootOrgId = o.ID
+	result.RootOrgCode = o.Code
+	result, err = TenantUpdate(result)
 
-func TenantDelete(id int64) (err error) {
-	err = db.Where("id=?", id).Delete(&bean.Tenant{}).Error
 	return
 }
 

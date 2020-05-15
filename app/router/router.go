@@ -34,6 +34,11 @@ func NewRouter() *gin.Engine {
 		_auth := _api.Group("")
 		_auth.Use(middleware.Auth(), middleware.Logger())
 		{
+			_auth.GET("/tenant", api.TenantList)
+			_auth.POST("/tenant", api.TenantCreate)
+			_auth.PUT("/tenant/:id", api.TenantUpdate)
+			_auth.GET("/tenant/:id", api.TenantRead)
+
 			_auth.GET("/role", api.RoleList)
 			_auth.POST("/role", api.RoleCreate)
 			_auth.DELETE("/role/:id", api.RoleDelete)
@@ -42,12 +47,6 @@ func NewRouter() *gin.Engine {
 
 			_auth.GET("/role/:id/auth", api.AuthList)
 			_auth.PUT("/role/:id/auth", api.AuthUpdate)
-
-			_auth.GET("/entry", api.EntryList)
-			_auth.POST("/entry", api.EntryCreate)
-			_auth.DELETE("/entry/:id", api.EntryDelete)
-			_auth.PUT("/entry/:id", api.EntryUpdate)
-			_auth.GET("/entry/:id", api.EntryRead)
 
 			_auth.GET("/org", api.OrgList)
 			_auth.POST("/org", api.OrgCreate)
