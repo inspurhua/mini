@@ -11,7 +11,7 @@ type User struct {
 	Password string `json:"password" form:"password"`
 	RoleId   int64  `json:"role_id" form:"role_id"`
 	OrgId    int64  `json:"org_id" form:"org_id"`
-	Status   int    `json:"status" form:"status"`
+	Status   int    `json:"status" form:"status" binding:"oneof=1 2"`
 
 	RealName string `json:"real_name" form:"real_name"`
 	Code     string `json:"code" form:"code"`

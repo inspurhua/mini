@@ -9,6 +9,7 @@ import (
 func Login(account, password string) (u bean.User, err error) {
 	err = db.Model(&bean.User{}).Where("account=$1 and password=md5($2) and status=1", account,
 		config.JwtSecret+password).First(&u).Error
+	//TODO 判断此人的tenant 状态是有效的
 	return
 }
 
@@ -55,7 +56,7 @@ func UserCreate(User bean.User) (result bean.User, err error) {
 	result = User
 
 	err = db.Create(&result).Error
-	result.Password =""
+	result.Password = ""
 	return
 }
 
@@ -66,13 +67,13 @@ func UserDelete(id int64) (err error) {
 
 func UserRead(id int64) (result bean.User, err error) {
 	err = db.Where("id=?", id).First(&result).Error
-	result.Password =""
+	result.Password = ""
 	return
 }
 
 func UserUpdate(User bean.User) (result bean.User, err error) {
 	User.UpdateAt = time.Now()
 	err = db.Model(&result).Update(User).Error
-	result.Password =""
+	result.Password = ""
 	return
 }
