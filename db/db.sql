@@ -1,6 +1,7 @@
 --多租户,超级管理员进来设置租户信息,新建租户默认形成当前租户
 --下面的管理员角色,组织,管理员用户,并且这些不允许删除
 --形成管理员角色,根组织后,会写admin_role,root_org_id,root_org_code,
+--TODO
 drop table if exists sys_tenant;
 create table sys_tenant
 (
