@@ -35,8 +35,9 @@ func Login(c *gin.Context) {
 	expire := time.Now().Add(2 * time.Hour).Unix()
 	claims := middleware.CustomClaims{
 		ID:             u.ID,
-		Org:            u.OrgId,
 		Role:           u.RoleId,
+		Org:            u.OrgId,
+		TenantId:       u.TenantId,
 		StandardClaims: jwt2.StandardClaims{ExpiresAt: expire},
 	}
 
