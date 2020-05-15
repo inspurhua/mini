@@ -39,6 +39,7 @@ func JWTToken() gin.HandlerFunc {
 		c.Set("UID", claims.ID)
 		c.Set("ORG_ID", claims.Org)
 		c.Set("ROLE_ID", claims.Role)
+		c.Set("TENANT_ID", claims.TenantId)
 		c.Next()
 	}
 }
@@ -59,9 +60,10 @@ var (
 
 // 载荷，可以加一些自己需要的信息
 type CustomClaims struct {
-	ID   int64 `json:"id"`
-	Role int64 `json:"role"`
-	Org  int64 `json:"org"`
+	ID       int64 `json:"id"`
+	Role     int64 `json:"role"`
+	Org      int64 `json:"org"`
+	TenantId int64 `json:"tenant_id"`
 	jwt.StandardClaims
 }
 
