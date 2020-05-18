@@ -147,10 +147,10 @@ func ChangPassword(c *gin.Context) {
 			c, errors.New("两次新密码输入不一致"))
 		return
 	}
-
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 	if uId, ok := c.Get("UID"); ok {
 		if uid, ok := uId.(int64); ok {
-			u, err := dao.UserRead(uid)
+			u, err := dao.UserRead(TenantId, uid)
 			if err != nil {
 				util.AbortNewResultErrorOfClient(
 					nil, errors.New("不存在此用户"))
