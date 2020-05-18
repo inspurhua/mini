@@ -22,15 +22,17 @@ func Login(account, password string) (u bean.User, err error) {
 }
 
 func UserList(tenantId int64, account string, roleId int64, orgId int64, offset, limit int64) (r []bean.UserResponse, count int, err error) {
+	t, _ := TenantRead(tenantId)
+
 	sql1 := "select count(u.id) from " + config.Prefix + "user u left join " + config.Prefix + "org o on u.org_id=o.id" +
-		" where u.tenant_id = ? and u.account like ? "
-	param1 := []interface{}{tenantId, "%" + account + "%"}
+		" where u.tenant_id = ? and u.account like ? and u.role_id != ?"
+	param1 := []interface{}{tenantId, "%" + account + "%", t.RoleAdmin}
 
 	sql := "select u.id,u.account,u.status,u.role_id,u.org_id,u.update_at,r.name as role,o.name as org from " + config.Prefix + "user u " +
 		" left join " + config.Prefix + "role r on u.role_id = r.id " +
 		" left join " + config.Prefix + "org o on u.org_id = o.id " +
-		" where u.tenant_id = ? and u.account like ? "
-	param := []interface{}{tenantId, "%" + account + "%"}
+		" where u.tenant_id = ? and u.account like ? and u.role_id != ?"
+	param := []interface{}{tenantId, "%" + account + "%", t.RoleAdmin}
 
 	if roleId > 0 {
 		sql1 += "and u.role_id = ? "
