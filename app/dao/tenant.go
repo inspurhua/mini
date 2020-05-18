@@ -2,6 +2,8 @@ package dao
 
 import (
 	"huage.tech/mini/app/bean"
+	"huage.tech/mini/app/config"
+	"huage.tech/mini/app/util"
 	"strconv"
 	"time"
 )
@@ -47,7 +49,7 @@ func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 	t := time.Now()
 	u := bean.User{
 		Account:  "admin" + strconv.FormatInt(result.ID, 10),
-		Password: "123456",
+		Password: util.Md5(config.JwtSecret + "123456"),
 		RoleId:   r.ID,
 		OrgId:    o.ID,
 		Status:   1,
