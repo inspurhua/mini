@@ -86,7 +86,10 @@
                     treeIdName: 'id',
                     treePidName: 'pid',
                     elem: '#munu-table',
-                    url: config.server + '/api/org?token=' + sessionStorage['token'],
+                    url: config.server + '/api/org',
+                    where:{
+                        token:sessionStorage["token"]
+                    },
                     page: false,
                     cols: [[
                         { field: 'name', minWidth: 200, title: '组织名称' },

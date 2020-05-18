@@ -80,7 +80,10 @@
       function loadTable() {
         table.render({
           elem: "#currentTableId",
-          url: config.server + "/api/tenant?token=" + sessionStorage["token"],
+          url: config.server + "/api/tenant",
+          headers:{
+            token:sessionStorage["token"]
+          },
           toolbar: "#toolbarDemo",
           defaultToolbar: [
             "filter",

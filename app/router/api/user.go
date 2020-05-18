@@ -19,6 +19,9 @@ func UserCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
+
 	form.Password = util.Md5(config.JwtSecret + form.Password)
 	r, err := dao.UserCreate(form)
 	if err != nil || r.ID == 0 {
@@ -37,18 +40,11 @@ func UserList(c *gin.Context) {
 	if err != nil {
 		roleId = 0
 	}
-	userRoleId, _ := c.MustGet("ROLE_ID").(int64)
-	userOrgId, _ := c.MustGet("ORG_ID").(int64)
+
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
-	//admin
-	orgCode := ""
-	if userRoleId != 1 {
-		org, err := dao.OrgRead(TenantId, userOrgId)
-		if err != nil {
-			util.AbortNewResultErrorOfServer(c, err)
-			return
-		}
-		orgCode = org.Code
+	orgId, err := strconv.ParseInt(c.DefaultQuery("org", ""), 10, 64)
+	if err != nil {
+		orgId = 0
 	}
 
 	pag := c.DefaultQuery("page", "1")
@@ -59,7 +55,7 @@ func UserList(c *gin.Context) {
 		return
 	}
 
-	r, count, err := dao.UserList(account, roleId, orgCode, offset, limit)
+	r, count, err := dao.UserList(TenantId, account, roleId, orgId, offset, limit)
 
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -81,7 +77,8 @@ func UserDelete(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, errors.New("不允许删除自己"))
 		return
 	}
-	err = dao.UserDelete(id)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	err = dao.UserDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -96,7 +93,8 @@ func UserRead(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	r, err := dao.UserRead(id)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	r, err := dao.UserRead(id, TenantId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -119,6 +117,8 @@ func UserUpdate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
 	form.ID = id
 	if len(form.Password) > 0 {
 		form.Password = util.Md5(config.JwtSecret + form.Password)

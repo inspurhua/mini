@@ -82,7 +82,10 @@
       function loadTable() {
         table.render({
           elem: "#currentTableId",
-          url: config.server + "/api/role?token=" + sessionStorage["token"],
+          url: config.server + "/api/role",
+          headers:{
+            token:sessionStorage["token"]
+          },
           toolbar: "#toolbarDemo",
           defaultToolbar: [
             "filter",

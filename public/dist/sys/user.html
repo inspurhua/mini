@@ -25,6 +25,12 @@
               </div>
             </div>
             <div class="layui-inline">
+              <label class="layui-form-label">组织</label>
+              <div class="layui-input-block">
+                <input id="org" name="org" type="text">
+              </div>
+            </div>
+            <div class="layui-inline">
               <button
                 type="submit"
                 class="layui-btn layui-btn-primary"
@@ -127,7 +133,7 @@
 
       loadTable();
       loadRole("#role");
-
+      loadOrg('#org');
       function loadRole(dom, value) {
         $.ajax({
           type: "GET",
@@ -154,10 +160,14 @@
           form.render();
         });
       }
+      
       function loadTable() {
         table.render({
           elem: "#currentTableId",
-          url: config.server + "/api/user?token=" + sessionStorage["token"],
+          url: config.server + "/api/user",
+          headers:{
+            token:sessionStorage["token"]
+          },
           toolbar: "#toolbarDemo",
           defaultToolbar: [
             "filter",
@@ -202,7 +212,10 @@
           // 选择器
           elem: dom,
           // 数据
-          data: config.server + "/api/orgtree?token=" + sessionStorage["token"],
+          headers: {
+            token:sessionStorage["token"]
+          },
+          data: config.server + "/api/orgtree" ,
           // 异步加载方式：get/post，默认get
           type: "get",
           // 点击回调

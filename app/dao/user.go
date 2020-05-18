@@ -21,16 +21,16 @@ func Login(account, password string) (u bean.User, err error) {
 	return
 }
 
-func UserList(account string, roleId int64, orgCode string, offset, limit int64) (r []bean.UserResponse, count int, err error) {
+func UserList(tenantId int64, account string, roleId int64, orgId int64, offset, limit int64) (r []bean.UserResponse, count int, err error) {
 	sql1 := "select count(u.id) from " + config.Prefix + "user u left join " + config.Prefix + "org o on u.org_id=o.id" +
-		" where u.account like ? "
-	param1 := []interface{}{"%" + account + "%"}
+		" where u.tenant_id = ? and u.account like ? "
+	param1 := []interface{}{tenantId, "%" + account + "%"}
 
 	sql := "select u.id,u.account,u.status,u.role_id,u.org_id,u.update_at,r.name as role,o.name as org from " + config.Prefix + "user u " +
 		" left join " + config.Prefix + "role r on u.role_id = r.id " +
 		" left join " + config.Prefix + "org o on u.org_id = o.id " +
-		" where u.account like ? "
-	param := []interface{}{"%" + account + "%"}
+		" where u.tenant_id = ? and u.account like ? "
+	param := []interface{}{tenantId, "%" + account + "%"}
 
 	if roleId > 0 {
 		sql1 += "and u.role_id = ? "
@@ -39,12 +39,12 @@ func UserList(account string, roleId int64, orgCode string, offset, limit int64)
 		sql += "and u.role_id = ? "
 		param = append(param, roleId)
 	}
-	if len(orgCode) > 0 {
-		sql1 += " and o.code like ? "
-		param1 = append(param1, orgCode+"%")
+	if orgId > 0 {
+		sql1 += " and u.org_id = ? "
+		param1 = append(param1, orgId)
 
-		sql += " and o.code like ? "
-		param = append(param, orgCode+"%")
+		sql += " and u.org_id = ? "
+		param = append(param, orgId)
 	}
 	err = db.Raw(sql1, param1...).Row().Scan(&count)
 	if err != nil {
@@ -68,13 +68,18 @@ func UserCreate(User bean.User) (result bean.User, err error) {
 	return
 }
 
-func UserDelete(id int64) (err error) {
-	err = db.Where("id=?", id).Delete(&bean.User{}).Error
+func UserDelete(tenantId, id int64) (err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).
+		Delete(&bean.User{}).Error
 	return
 }
 
-func UserRead(id int64) (result bean.User, err error) {
-	err = db.Where("id=?", id).First(&result).Error
+func UserRead(tenantId, id int64) (result bean.User, err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).First(&result).Error
 	result.Password = ""
 	return
 }
