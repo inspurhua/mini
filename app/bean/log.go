@@ -14,6 +14,7 @@ type Log struct {
 	Ip       string    `json:"data"`
 	Ua       string    `json:"data"`
 	CreateAt time.Time `json:"create_at"`
+	TenantId int64     `json:"tenant_id"`
 }
 
 func (Log) TableName() string {

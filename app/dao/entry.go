@@ -9,7 +9,7 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 	if roleId == 0 && tenantId == 0 {
 		err = db.Model(&bean.EntryTree{}).
 			Where("type=?", 1).
-			Where("super=?", 1).
+			Where("kind in (?)", []int{0, 1}).
 			Order("sort").
 			Find(&result).Error
 	} else {
@@ -19,13 +19,13 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 			//普通管理员
 			err = db.Model(&bean.EntryTree{}).
 				Where("type=?", 1).
-				Where("super=?", 0).
+				Where("kind in(?)", []int{0, 2}).
 				Order("sort").
 				Find(&result).Error
 		} else {
 			//普通操作员,根据权限表查询
 			err = db.Raw("select e.* from sys_entry e right join sys_auth a"+
-				" on e.id = a.entry_id and a.role_id=? where e.type=1 where e.super =0 order by e.sort", roleId).Scan(&result).Error
+				" on e.id = a.entry_id and a.role_id=? where e.type=1 where e.kind in (0,2) order by e.sort", roleId).Scan(&result).Error
 		}
 	}
 	return

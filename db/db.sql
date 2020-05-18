@@ -62,7 +62,7 @@ create table sys_entry
     icon   text,
     target text         default '_self',
     sort   int,
-    super  int not null default 0 --( 为1的时候是租户=1切角色=1的 才展示的菜单)
+    kind   int not null default 0 --0.common 1.chaoji 2.putong
 );
 insert into sys_entry
 values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
@@ -74,41 +74,40 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
        (904, '删除租户', 900, 2, 'DELETE', '/api/tenant/:id', '', '', 4, 1),
        (905, '查看租户', 900, 2, 'GET', '/api/tenant/:id', '', '', 5, 1),
 
-       (1000, '角色', 1, 1, '', 'sys/role.html', 'fa fa-group', '_self', 1, 0),
-       (1001, '角色列表', 1000, 2, 'GET', '/api/role', '', '', 1, 0),
-       (1002, '添加角色', 1000, 2, 'POST', '/api/role', '', '', 2, 0),
-       (1003, '编辑角色', 1000, 2, 'PUT', '/api/role/:id', '', '', 3, 0),
-       (1004, '删除角色', 1000, 2, 'DELETE', '/api/role/:id', '', '', 4, 0),
-       (1005, '查看角色', 1000, 2, 'GET', '/api/role/:id', '', '', 5, 0),
-       (1006, '查看授权', 1000, 2, 'GET', '/api/role/:id/auth', '', '', 6, 0),
-       (1007, '设置授权', 1000, 2, 'PUT', '/api/role/:id/auth', '', '', 7, 0),
+       (1000, '角色', 1, 1, '', 'sys/role.html', 'fa fa-group', '_self', 1, 2),
+       (1001, '角色列表', 1000, 2, 'GET', '/api/role', '', '', 1, 2),
+       (1002, '添加角色', 1000, 2, 'POST', '/api/role', '', '', 2, 2),
+       (1003, '编辑角色', 1000, 2, 'PUT', '/api/role/:id', '', '', 3, 2),
+       (1004, '删除角色', 1000, 2, 'DELETE', '/api/role/:id', '', '', 4, 2),
+       (1005, '查看角色', 1000, 2, 'GET', '/api/role/:id', '', '', 5, 2),
+       (1006, '查看授权', 1000, 2, 'GET', '/api/role/:id/auth', '', '', 6, 2),
+       (1007, '设置授权', 1000, 2, 'PUT', '/api/role/:id/auth', '', '', 7, 2),
 
-       (1100, '组织', 1, 1, '', 'sys/org.html', 'fa fa-sitemap', '_self', 1, 0),
-       (1101, '组织列表', 1100, 2, 'GET', '/api/org', '', '', 1, 0),
-       (1102, '添加组织', 1100, 2, 'POST', '/api/org', '', '', 2, 0),
-       (1103, '编辑组织', 1100, 2, 'PUT', '/api/org/:id', '', '', 3, 0),
-       (1104, '删除组织', 1100, 2, 'DELETE', '/api/org/:id', '', '', 4, 0),
-       (1105, '查看组织', 1100, 2, 'GET', '/api/org/:id', '', '', 5, 0),
+       (1100, '组织', 1, 1, '', 'sys/org.html', 'fa fa-sitemap', '_self', 1, 2),
+       (1101, '组织列表', 1100, 2, 'GET', '/api/org', '', '', 1, 2),
+       (1102, '添加组织', 1100, 2, 'POST', '/api/org', '', '', 2, 2),
+       (1103, '编辑组织', 1100, 2, 'PUT', '/api/org/:id', '', '', 3, 2),
+       (1104, '删除组织', 1100, 2, 'DELETE', '/api/org/:id', '', '', 4, 2),
+       (1105, '查看组织', 1100, 2, 'GET', '/api/org/:id', '', '', 5, 2),
 
 
-       (1200, '用户', 1, 1, '', 'sys/user.html', 'fa fa-user', '_self', 1, 0),
-       (1201, '用户列表', 1200, 2, 'GET', '/api/user', '', '', 1, 0),
-       (1202, '添加用户', 1200, 2, 'POST', '/api/user', '', '', 2, 0),
-       (1203, '编辑用户', 1200, 2, 'PUT', '/api/user/:id', '', '', 3, 0),
-       (1204, '删除用户', 1200, 2, 'DELETE', '/api/user/:id', '', '', 4, 0),
-       (1205, '查看用户', 1200, 2, 'GET', '/api/user/:id', '', '', 5, 0),
+       (1200, '用户', 1, 1, '', 'sys/user.html', 'fa fa-user', '_self', 1, 2),
+       (1201, '用户列表', 1200, 2, 'GET', '/api/user', '', '', 1, 2),
+       (1202, '添加用户', 1200, 2, 'POST', '/api/user', '', '', 2, 2),
+       (1203, '编辑用户', 1200, 2, 'PUT', '/api/user/:id', '', '', 3, 2),
+       (1204, '删除用户', 1200, 2, 'DELETE', '/api/user/:id', '', '', 4, 2),
+       (1205, '查看用户', 1200, 2, 'GET', '/api/user/:id', '', '', 5, 2),
 
-       (1300, '日志', 1, 1, '', 'sys/log.html', 'fa fa-list', '_self', 1, 1),
-       (1301, '日志列表', 1300, 2, 'GET', '/api/log', '', '', 1, 1),
-       (2, '业务管理', 0, 1, '', '', '', '', 1);
+       (1300, '日志', 1, 1, '', 'sys/log.html', 'fa fa-list', '_self', 1, 0),
+       (1301, '日志列表', 1300, 2, 'GET', '/api/log', '', '', 1, 0),
+       (2, '业务管理', 0, 1, '', '', '', '', 1, 2);
 SELECT setval('sys_entry_id_seq', (select max(id) from sys_entry), true);
 drop table if exists sys_auth;
 create table sys_auth
 (
-    id        bigserial primary key,
-    role_id   integer,
-    entry_id  integer,
-    tenant_id int not null
+    id       bigserial primary key,
+    role_id  integer,
+    entry_id integer
 );
 
 
@@ -173,6 +172,7 @@ create table sys_log
     ip        text,
     ua        text,
     method    text,
+    tenant_id int not null,
     create_at timestamp without time zone default localtimestamp(0)
 );
 

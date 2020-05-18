@@ -13,6 +13,7 @@ type LogResult struct {
 	Method   string    `json:"method"`
 	Uri      string    `json:"uri"`
 	CreateAt time.Time `json:"create_at"`
+	TenantId int64      `json:"tenant_id"`
 }
 
 func LogList(date, account, method, uri string, offset, limit int64) (e []bean.LogResult, count int, err error) {
