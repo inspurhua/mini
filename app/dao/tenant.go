@@ -1,6 +1,10 @@
 package dao
 
-import "huage.tech/mini/app/bean"
+import (
+	"huage.tech/mini/app/bean"
+	"strconv"
+	"time"
+)
 
 func TenantList() (r []bean.Tenant, err error) {
 	err = db.Find(&r).Error
@@ -15,6 +19,7 @@ func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 		tx.Rollback()
 		return
 	}
+	//role
 	r := bean.Role{
 		Name:     result.Name + "管理员",
 		Status:   1,
@@ -25,14 +30,32 @@ func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 		tx.Rollback()
 		return
 	}
+	//org
 	o := bean.Org{
-		Name:     result.Name,
+		Name:     result.Name + "根组织",
 		Code:     "100",
 		PId:      0,
 		Sort:     0,
 		TenantId: result.ID,
 	}
 	err = tx.Create(&o).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	//user
+	t := time.Now()
+	u := bean.User{
+		Account:  "admin" + strconv.FormatInt(result.ID, 10),
+		Password: "123456",
+		RoleId:   r.ID,
+		OrgId:    o.ID,
+		Status:   1,
+		CreateAt: t,
+		UpdateAt: t,
+		TenantId: result.ID,
+	}
+	err = tx.Create(&u).Error
 	if err != nil {
 		tx.Rollback()
 		return

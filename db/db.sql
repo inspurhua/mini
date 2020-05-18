@@ -137,7 +137,7 @@ create table sys_user
     tenant_id int     not null
 );
 
-insert into sys_user(id, account, password, role_id, org_id, tenant_id)
+insert into sys_user(id, account, password, role_id, 1, tenant_id)
 values (1, 'admin', md5('abc123456'), 0, 0, 0),
        (2, 'zhanghua', md5('abc123456'), 1, 1, 1);
 SELECT setval('sys_user_id_seq', (select max(id) from sys_user), true);
