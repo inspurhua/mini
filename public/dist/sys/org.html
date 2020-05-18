@@ -175,6 +175,7 @@
                             .done(function (res) {
                                 if (res.code == 0) {
                                     loadTable();
+                                    layer.close(parentIndex);
                                     miniAdmin.success(res.msg);
                                 } else {
                                     miniAdmin.error(res.msg);
@@ -183,7 +184,7 @@
                             .fail(function () {
                                 miniAdmin.error("保存出错");
                             });
-                        layer.close(parentIndex);
+                       
                         return false;
                     });
                 }
