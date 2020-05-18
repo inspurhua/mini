@@ -24,7 +24,8 @@ func LogList(c *gin.Context) {
 		bef := now.Add(-1 * 24 * time.Hour)
 		date = bef.Format("2006-01-02 15:04:05") + " - " + now.Format("2006-01-02 15:04:05")
 	}
-	r, count, err := dao.LogList(date, account, method, uri, offset, limit)
+	tenantId, _ := c.MustGet("TENANT_ID").(int64)
+	r, count, err := dao.LogList(tenantId, date, account, method, uri, offset, limit)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

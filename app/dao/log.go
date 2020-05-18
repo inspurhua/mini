@@ -13,34 +13,45 @@ type LogResult struct {
 	Method   string    `json:"method"`
 	Uri      string    `json:"uri"`
 	CreateAt time.Time `json:"create_at"`
-	TenantId int64      `json:"tenant_id"`
+	TenantId int64     `json:"tenant_id"`
 }
 
-func LogList(date, account, method, uri string, offset, limit int64) (e []bean.LogResult, count int, err error) {
+func LogList(tenantId int64, date, account, method, uri string, offset, limit int64) (e []bean.LogResult, count int, err error) {
 	dd := strings.Split(date, " - ")
 
-	row := db.Raw("select count(a.id) from "+
-		config.Prefix+"log a left join "+config.Prefix+"user b "+
-		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=? "+
-		" and a.create_at >= ? and a.create_at <= ?",
-		"%"+account+"%",
-		"%"+uri+"%",
+	segTenant := ""
+	slCount := []interface{}{
+		"%" + account + "%",
+		"%" + uri + "%",
 		method, dd[0], dd[1],
-	).Row()
+	}
+	slRet := slCount
+
+	if tenantId > 0 {
+		segTenant = " and a.tenant_id=? "
+		slCount = append(slCount, tenantId)
+		slRet = append(slRet, tenantId, offset, limit)
+	} else {
+		slRet = append(slRet, offset, limit)
+	}
+
+	countSql := "select count(a.id) from " +
+		config.Prefix + "log a left join " + config.Prefix + "user b " +
+		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=? " +
+		" and a.create_at >= ? and a.create_at <= ?" + segTenant
+	retSql := "select b.account,a.id,a.method,a.uri,a.create_at from " +
+		config.Prefix + "log a left join " + config.Prefix + "user b " +
+		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=?" +
+		" and a.create_at >= ? and a.create_at <= ? " + segTenant + " order by id desc offset ? limit ?"
+
+	row := db.Raw(countSql, slCount...).Row()
 	row.Scan(&count)
 
 	if err != nil {
 		return
 	}
 
-	err = db.Raw("select b.account,a.id,a.method,a.uri,a.create_at from "+
-		config.Prefix+"log a left join "+config.Prefix+"user b "+
-		" on a.user_id = b.id where b.account like ? and a.uri like ? and a.method=?"+
-		" and a.create_at >= ? and a.create_at <= ?  order by id desc offset ? limit ?",
-		"%"+account+"%",
-		"%"+uri+"%",
-		method, dd[0], dd[1], offset, limit,
-	).Scan(&e).Error
+	err = db.Raw(retSql, slRet...).Scan(&e).Error
 
 	return
 

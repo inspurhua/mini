@@ -27,6 +27,10 @@ func Logger() gin.HandlerFunc {
 				log.UserId = id
 			}
 		}
+
+		tId, _ := c.MustGet("TENANT_ID").(int64)
+		log.TenantId = tId
+
 		if _, err := dao.LogCreate(log); err != nil {
 			c.Abort()
 			return

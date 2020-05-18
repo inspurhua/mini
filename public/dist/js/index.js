@@ -7,7 +7,7 @@ layui.use(["jquery", "layer", "miniAdmin", "conf"], function () {
   if (!sessionStorage.getItem("token")) {
     window.location = "/login.html";
   }
-  $("#user").text(sessionStorage.getItem("account"));
+  $("#account").text(sessionStorage.getItem("account"));
   var options = {
     iniUrl: config.server + "/api/menu?token=" + sessionStorage["token"], // 初始化接口
     clearUrl: "api/clear.json", // 缓存清理接口
