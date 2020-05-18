@@ -12,10 +12,10 @@ import (
 func TenantCreate(c *gin.Context) {
 	var err error
 	var form bean.Tenant
-	RoleId, _ := c.MustGet("Tenant_ID").(int64)
-	TenantId, _ := c.MustGet("Tenant_ID").(int64)
+	RoleId, _ := c.MustGet("ROLE_ID").(int64)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 
-	if !(RoleId == 1 && TenantId == 1) {
+	if !(RoleId == 0 && TenantId == 0) {
 		util.AbortNewResultErrorOfServer(c, errors.New("当前角色不支持此操作"))
 		return
 	}
@@ -36,10 +36,10 @@ func TenantCreate(c *gin.Context) {
 }
 
 func TenantList(c *gin.Context) {
-	RoleId, _ := c.MustGet("Tenant_ID").(int64)
-	TenantId, _ := c.MustGet("Tenant_ID").(int64)
+	RoleId, _ := c.MustGet("ROLE_ID").(int64)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 
-	if !(RoleId == 1 && TenantId == 1) {
+	if !(RoleId == 0 && TenantId == 0) {
 		util.AbortNewResultErrorOfServer(c, errors.New("当前角色不支持此操作"))
 		return
 	}
@@ -54,10 +54,10 @@ func TenantList(c *gin.Context) {
 }
 
 func TenantRead(c *gin.Context) {
-	RoleId, _ := c.MustGet("Tenant_ID").(int64)
-	TokenTenantId, _ := c.MustGet("Tenant_ID").(int64)
+	RoleId, _ := c.MustGet("ROLE_ID").(int64)
+	TokenTenantId, _ := c.MustGet("TENANT_ID").(int64)
 
-	if !(RoleId == 1 && TokenTenantId == 1) {
+	if !(RoleId == 0 && TokenTenantId == 0) {
 		util.AbortNewResultErrorOfServer(c, errors.New("当前角色不支持此操作"))
 		return
 	}
@@ -80,10 +80,10 @@ func TenantUpdate(c *gin.Context) {
 	var err error
 	var form bean.Tenant
 
-	RoleId, _ := c.MustGet("Tenant_ID").(int64)
-	TokenTenantId, _ := c.MustGet("Tenant_ID").(int64)
+	RoleId, _ := c.MustGet("ROLE_ID").(int64)
+	TokenTenantId, _ := c.MustGet("TENANT_ID").(int64)
 
-	if !(RoleId == 1 && TokenTenantId == 1) {
+	if !(RoleId == 0 && TokenTenantId == 0) {
 		util.AbortNewResultErrorOfServer(c, errors.New("当前角色不支持此操作"))
 		return
 	}
