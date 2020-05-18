@@ -2,7 +2,7 @@
   <div class="layuimini-main">
     <fieldset class="table-search-fieldset">
       <legend>搜索信息</legend>
-      <div style="margin: 10px 10px 10px 10px">
+      <div style="margin: 10px 10px 10px 10px;">
         <form class="layui-form layui-form-pane" action="">
           <div class="layui-form-item">
             <div class="layui-inline">
@@ -16,18 +16,18 @@
                 />
               </div>
             </div>
-            
+
             <div class="layui-inline">
-                <label class="layui-form-label">方法</label>
-                <div class="layui-input-block">
-                  <select name="method" lay-verify="required">
-                    <option value=""></option>
-                    <option value="GET">查询</option>
-                    <option value="POST">添加</option>
-                    <option value="PUT">修改</option>
-                    <option value="DELETE">删除</option>
-                  </select>
-                </div>
+              <label class="layui-form-label">方法</label>
+              <div class="layui-input-block">
+                <select name="method" lay-verify="required">
+                  <option value=""></option>
+                  <option value="GET">查询</option>
+                  <option value="POST">添加</option>
+                  <option value="PUT">修改</option>
+                  <option value="DELETE">删除</option>
+                </select>
+              </div>
             </div>
             <div class="layui-inline">
               <label class="layui-form-label">路径</label>
@@ -42,21 +42,21 @@
             </div>
 
             <div class="layui-inline">
-                <label class="layui-form-label">时间段</label>
-                <div class="layui-input-inline">
-                  <input id="date"
-                    type="text"
-                    name="date"
-                    autocomplete="off"
-                    class="layui-input"
-                  />
-                </div>
+              <label class="layui-form-label">时间段</label>
+              <div class="layui-input-inline">
+                <input
+                  id="date"
+                  type="text"
+                  name="date"
+                  autocomplete="off"
+                  class="layui-input"
+                />
               </div>
-              
+            </div>
+
             <div class="layui-inline">
               <button
                 type="submit"
-                
                 class="layui-btn layui-btn-primary"
                 lay-submit
                 lay-filter="data-search-btn"
@@ -78,70 +78,83 @@
 </div>
 
 <script>
-  layui.use(["form", "table", "miniPage", "element", "conf","laydate","jquery"], function() {
-    var $ = layui.jquery,
-      form = layui.form,
-      table = layui.table,
-      config = layui.conf,
-      miniPage = layui.miniPage;
+  layui.use(
+    ["form", "table", "miniPage", "element", "conf", "laydate", "jquery"],
+    function () {
+      var $ = layui.jquery,
+        form = layui.form,
+        table = layui.table,
+        config = layui.conf,
+        miniPage = layui.miniPage;
       var laydate = layui.laydate;
-  
-    var date1 = new Date();
-    var time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate()
-    var date2 = new Date(date1);
-     date2.setDate(date1.getDate() -1);
-     var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate(); 
-  //执行一个laydate实例
-  laydate.render({
-    elem: '#date' //指定元素,
-    ,type: 'date'
-  ,range: true 
-  ,trigger: 'click'
-  ,value:  time2 +" - " +time1
-  });
-    table.render({
-      elem: "#currentTableId",
-      url: config.server + "/api/log?token=" + sessionStorage["token"],
 
-      defaultToolbar: [
-        "filter",
-        "exports",
-        "print",
-        {
-          title: "提示",
-          layEvent: "LAYTABLE_TIPS",
-          icon: "layui-icon-tips"
-        }
-      ],
-      cols: [
-        [
-          { field: "id", width: 80, title: "ID" },
-          { field: "account", title: "用户名" },
-          { field: "method", width: 80, title: "操作" },
-          { field: "uri", title: "路径" },
-          { field: "create_at", title: "操作时间" }
-        ]
-      ],
-      limits: [10, 15, 20, 25, 50, 100],
-      limit: 15,
-      page: true
-    });
+      var date1 = new Date();
+      var time1 =
+        date1.getFullYear() +
+        "-" +
+        (date1.getMonth() + 1) +
+        "-" +
+        date1.getDate();
+      var date2 = new Date(date1);
+      date2.setDate(date1.getDate() - 1);
+      var time2 =
+        date2.getFullYear() +
+        "-" +
+        (date2.getMonth() + 1) +
+        "-" +
+        date2.getDate();
+      //执行一个laydate实例
+      laydate.render({
+        elem: "#date", //指定元素,
+        type: "date",
+        range: true,
+        trigger: "click",
+        value: time2 + " - " + time1,
+      });
+      table.render({
+        elem: "#currentTableId",
+        url: config.server + "/api/log?token=" + sessionStorage["token"],
 
-    // 监听搜索操作
-    form.on("submit(data-search-btn)", function(data) {
-       //执行搜索重载
-      table.reload(
-        "currentTableId",
-        {
-          page: {
-            curr: 1
+        defaultToolbar: [
+          "filter",
+          "exports",
+          "print",
+          {
+            title: "提示",
+            layEvent: "LAYTABLE_TIPS",
+            icon: "layui-icon-tips",
           },
-          where:data.field
-        },
-        "data"
-      );
+        ],
+        cols: [
+          [
+            { field: "id", width: 80, title: "ID" },
+            { field: "account", title: "用户名" },
+            { field: "method", width: 80, title: "操作" },
+            { field: "uri", title: "路径" },
+            { field: "create_at", title: "操作时间" },
+          ],
+        ],
+        limits: [10, 15, 20, 25, 50, 100],
+        limit: 15,
+        page: true,
+      });
 
-      return false;
-    });
-  });
+      // 监听搜索操作
+      form.on("submit(data-search-btn)", function (data) {
+        //执行搜索重载
+        table.reload(
+          "currentTableId",
+          {
+            page: {
+              curr: 1,
+            },
+            where: data.field,
+          },
+          "data"
+        );
+
+        return false;
+      });
+    }
+  );
 </script>

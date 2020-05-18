@@ -20,7 +20,7 @@ func NewRouter() *gin.Engine {
 	gin.SetMode(config.RunMode)
 
 	_api := r.Group("/api")
-	_api.POST("/login", api.Login)
+	_api.POST("/login", middleware.Logger(), api.Login)
 	_api.Use(middleware.JWTToken())
 	{
 		//刷新token
@@ -32,6 +32,10 @@ func NewRouter() *gin.Engine {
 		_api.GET("/orgtree", api.OrgTree)
 
 		_auth := _api.Group("")
+		_auth.Use(middleware.Auth())
+		{
+			_auth.GET("/log", api.LogList)
+		}
 		_auth.Use(middleware.Auth(), middleware.Logger())
 		{
 			_auth.GET("/tenant", api.TenantList)
@@ -60,7 +64,6 @@ func NewRouter() *gin.Engine {
 			_auth.PUT("/user/:id", api.UserUpdate)
 			_auth.GET("/user/:id", api.UserRead)
 
-			_auth.GET("/log", api.LogList)
 		}
 	}
 
