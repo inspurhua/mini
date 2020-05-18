@@ -17,7 +17,8 @@ func RoleCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
-
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
 	r, err := dao.RoleCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -29,7 +30,9 @@ func RoleCreate(c *gin.Context) {
 
 func RoleList(c *gin.Context) {
 	roleId, _ := c.MustGet("ROLE_ID").(int64)
-	r, err := dao.RoleList(roleId)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+
+	r, err := dao.RoleList(TenantId, roleId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -45,7 +48,8 @@ func RoleDelete(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	err = dao.RoleDelete(id)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	err = dao.RoleDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -60,7 +64,8 @@ func RoleRead(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	r, err := dao.RoleRead(id)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	r, err := dao.RoleRead(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -79,6 +84,8 @@ func RoleUpdate(c *gin.Context) {
 	}
 
 	err = c.ShouldBind(&form)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
 	if err != nil {
 		util.AbortNewResultErrorOfClient(c, err)
 		return

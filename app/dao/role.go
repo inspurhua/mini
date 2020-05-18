@@ -2,12 +2,10 @@ package dao
 
 import "huage.tech/mini/app/bean"
 
-func RoleList(roleId int64) (r []bean.Role, err error) {
-	if roleId != 1 {
-		err = db.Where("id != ?", 1).Find(&r).Error
-		return
-	}
-	err = db.Find(&r).Error
+func RoleList(tenantId, roleId int64) (r []bean.Role, err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id != ?", roleId).Find(&r).Error
 	return
 }
 
@@ -17,13 +15,17 @@ func RoleCreate(role bean.Role) (result bean.Role, err error) {
 	return
 }
 
-func RoleDelete(id int64) (err error) {
-	err = db.Where("id=?", id).Delete(&bean.Role{}).Error
+func RoleDelete(tenantId, id int64) (err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).Delete(&bean.Role{}).Error
 	return
 }
 
-func RoleRead(id int64) (result bean.Role, err error) {
-	err = db.Where("id=?", id).First(&result).Error
+func RoleRead(tenantId, id int64) (result bean.Role, err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).First(&result).Error
 	return
 }
 
