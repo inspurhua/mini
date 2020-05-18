@@ -60,10 +60,11 @@ var (
 
 // 载荷，可以加一些自己需要的信息
 type CustomClaims struct {
-	ID       int64 `json:"id"`
-	Role     int64 `json:"role"`
-	Org      int64 `json:"org"`
-	TenantId int64 `json:"tenant_id"`
+	ID       int64  `json:"id"`
+	Role     int64  `json:"role"`
+	Org      int64  `json:"org"`
+	OrgCode  string `json:"org_code"`
+	TenantId int64  `json:"tenant_id"`
 	jwt.StandardClaims
 }
 

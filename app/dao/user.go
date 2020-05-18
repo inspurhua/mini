@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/config"
 	"time"
@@ -9,7 +10,14 @@ import (
 func Login(account, password string) (u bean.User, err error) {
 	err = db.Model(&bean.User{}).Where("account=$1 and password=md5($2) and status=1", account,
 		config.JwtSecret+password).First(&u).Error
-	//TODO 判断此人的tenant 状态是有效的
+	//非超级管理员时判断此人的tenant状态是有效的
+	if err != nil && u.TenantId > 0 {
+		t, _ := TenantRead(u.TenantId)
+		if t.Status == 2 {
+			err = errors.New("该租户已经被禁止使用")
+			return
+		}
+	}
 	return
 }
 

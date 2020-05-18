@@ -33,10 +33,17 @@ func Login(c *gin.Context) {
 
 	jwt := middleware.NewJWT()
 	expire := time.Now().Add(2 * time.Hour).Unix()
+
+	org, err := dao.OrgRead(u.OrgId)
+	orgCode := ""
+	if err != nil || org.Code != "" {
+		orgCode = org.Code
+	}
 	claims := middleware.CustomClaims{
 		ID:             u.ID,
 		Role:           u.RoleId,
 		Org:            u.OrgId,
+		OrgCode:        orgCode,
 		TenantId:       u.TenantId,
 		StandardClaims: jwt2.StandardClaims{ExpiresAt: expire},
 	}

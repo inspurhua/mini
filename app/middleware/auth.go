@@ -13,6 +13,11 @@ func Auth() gin.HandlerFunc {
 		t, _ := dao.TenantRead(tenantId)
 
 		role, _ := c.MustGet("ROLE_ID").(int64)
+
+		if tenantId == 0 && role == 0 {
+			c.Next()
+			return
+		}
 		if role != t.RoleAdmin {
 			//判断权限
 			method := c.Request.Method

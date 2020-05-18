@@ -6,27 +6,28 @@ import (
 
 func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 	//超级管理员
-	if roleId == 1 && tenantId == 1 {
+	if roleId == 0 && tenantId == 0 {
 		err = db.Model(&bean.EntryTree{}).
 			Where("type=?", 1).
 			Where("super=?", 1).
 			Order("sort").
 			Find(&result).Error
 	} else {
-		//普通管理员
-		//TODO
 		//从tenant表中获取role_admin,如果==roleId,
-		err = db.Model(&bean.EntryTree{}).
-			Where("type=?", 1).
-			Where("super=?", 0).
-			Order("sort").
-			Find(&result).Error
-		//否则
-		//TODO
-		err = db.Raw("select e.* from sys_entry e right join sys_auth a"+
-			" on e.id = a.entry_id and a.role_id=? where e.type=1 where e.super =0 order by e.sort", roleId).Scan(&result).Error
+		t, _ := TenantRead(tenantId)
+		if t.RoleAdmin == roleId {
+			//普通管理员
+			err = db.Model(&bean.EntryTree{}).
+				Where("type=?", 1).
+				Where("super=?", 0).
+				Order("sort").
+				Find(&result).Error
+		} else {
+			//普通操作员,根据权限表查询
+			err = db.Raw("select e.* from sys_entry e right join sys_auth a"+
+				" on e.id = a.entry_id and a.role_id=? where e.type=1 where e.super =0 order by e.sort", roleId).Scan(&result).Error
+		}
 	}
-
 	return
 }
 
