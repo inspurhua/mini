@@ -34,7 +34,7 @@ func Login(c *gin.Context) {
 	jwt := middleware.NewJWT()
 	expire := time.Now().Add(2 * time.Hour).Unix()
 
-	org, err := dao.OrgRead(u.OrgId)
+	org, err := dao.OrgRead(u.TenantId, u.OrgId)
 	orgCode := ""
 	if err != nil || org.Code != "" {
 		orgCode = org.Code

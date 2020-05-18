@@ -39,10 +39,11 @@ func UserList(c *gin.Context) {
 	}
 	userRoleId, _ := c.MustGet("ROLE_ID").(int64)
 	userOrgId, _ := c.MustGet("ORG_ID").(int64)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 	//admin
 	orgCode := ""
 	if userRoleId != 1 {
-		org, err := dao.OrgRead(userOrgId)
+		org, err := dao.OrgRead(TenantId, userOrgId)
 		if err != nil {
 			util.AbortNewResultErrorOfServer(c, err)
 			return

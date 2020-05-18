@@ -7,6 +7,7 @@ import (
 	"huage.tech/mini/app/dao"
 	"huage.tech/mini/app/util"
 	"strconv"
+	"strings"
 )
 
 func OrgCreate(c *gin.Context) {
@@ -21,7 +22,13 @@ func OrgCreate(c *gin.Context) {
 	err = c.ShouldBind(&form)
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 	form.TenantId = TenantId
-
+	//check code
+	//parent
+	parentOrg, err := dao.OrgRead(TenantId, form.PId)
+	if !strings.HasPrefix(form.Code, parentOrg.Code) || len(parentOrg.Code)+3 != len(form.Code) {
+		util.AbortNewResultErrorOfClient(c, errors.New("编码必须满足3-3-3...的格式,且以父级编码为前缀"))
+		return
+	}
 	r, err := dao.OrgCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -74,9 +81,15 @@ func OrgUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
-	err = c.ShouldBind(&form)
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 	form.TenantId = TenantId
+	//check code
+	//parent
+	parentOrg, err := dao.OrgRead(TenantId, form.PId)
+	if !strings.HasPrefix(form.Code, parentOrg.Code) || len(parentOrg.Code)+3 != len(form.Code) {
+		util.AbortNewResultErrorOfClient(c, errors.New("编码必须满足3-3-3...的格式,且以父级编码为前缀"))
+		return
+	}
 
 	r, err := dao.OrgUpdate(form)
 	if err != nil {
