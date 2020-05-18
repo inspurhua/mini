@@ -18,6 +18,10 @@ func OrgCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
+	err = c.ShouldBind(&form)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
+
 	r, err := dao.OrgCreate(form)
 	if err != nil || r.ID == 0 {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -43,7 +47,10 @@ func OrgDelete(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, errors.New("当前部门存在下级部门不能删除"))
 		return
 	}
-	err = dao.OrgDelete(id)
+
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+
+	err = dao.OrgDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -67,6 +74,10 @@ func OrgUpdate(c *gin.Context) {
 		return
 	}
 	form.ID = id
+	err = c.ShouldBind(&form)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	form.TenantId = TenantId
+
 	r, err := dao.OrgUpdate(form)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
@@ -83,7 +94,8 @@ func OrgRead(c *gin.Context) {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	r, err := dao.OrgRead(id)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	r, err := dao.OrgRead(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -92,7 +104,8 @@ func OrgRead(c *gin.Context) {
 }
 
 func OrgList(c *gin.Context) {
-	r, err := dao.OrgList()
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	r, err := dao.OrgList(TenantId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
@@ -102,11 +115,12 @@ func OrgList(c *gin.Context) {
 }
 
 func OrgTree(c *gin.Context) {
-	roleId, _ := c.MustGet("ROLE_ID").(int64)
+	//roleId, _ := c.MustGet("ROLE_ID").(int64)
 	orgId, _ := c.MustGet("ORG_ID").(int64)
-	org, _ := dao.OrgRead(orgId)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	org, _ := dao.OrgRead(TenantId, orgId)
 
-	v, err := dao.OrgTree(roleId, org.Code)
+	v, err := dao.OrgTree(TenantId, org.Code)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

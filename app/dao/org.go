@@ -4,8 +4,9 @@ import (
 	"huage.tech/mini/app/bean"
 )
 
-func OrgList() (e []bean.Org, err error) {
+func OrgList(tenantId int64) (e []bean.Org, err error) {
 	err = db.
+		Where("tenant_id=?", tenantId).
 		Order("sort").
 		Find(&e).Error
 
@@ -18,13 +19,17 @@ func OrgCreate(e bean.Org) (result bean.Org, err error) {
 	return
 }
 
-func OrgDelete(id int64) (err error) {
-	err = db.Where("id=?", id).Delete(&bean.Org{}).Error
+func OrgDelete(tenantId, id int64) (err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).Delete(&bean.Org{}).Error
 	return
 }
 
-func OrgRead(id int64) (result bean.Org, err error) {
-	err = db.Where("id=?", id).First(&result).Error
+func OrgRead(tenantId, id int64) (result bean.Org, err error) {
+	err = db.
+		Where("tenant_id=?", tenantId).
+		Where("id=?", id).First(&result).Error
 	return
 }
 
@@ -33,19 +38,12 @@ func OrgUpdate(e bean.Org) (result bean.Org, err error) {
 	return
 }
 
-func OrgTree(roleId int64, code string) (result []*bean.OrgTree, err error) {
-
-	if roleId == 1 {
-		err = db.Model(&bean.OrgTree{}).
-			Order("sort").
-			Find(&result).Error
-	} else {
-		err = db.Model(&bean.OrgTree{}).
-			Where("code like ?", code+"%").
-			Order("sort").
-			Find(&result).Error
-	}
-
+func OrgTree(tenantId int64, code string) (result []*bean.OrgTree, err error) {
+	err = db.Model(&bean.OrgTree{}).
+		Where("tenant_id=?", tenantId).
+		Where("code like ?", code+"%").
+		Order("sort").
+		Find(&result).Error
 	return
 }
 
