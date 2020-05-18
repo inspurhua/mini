@@ -25,7 +25,7 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 		} else {
 			//普通操作员,根据权限表查询
 			err = db.Raw("select e.* from sys_entry e right join sys_auth a"+
-				" on e.id = a.entry_id and a.role_id=? where e.type=1 where e.kind in (0,2) order by e.sort", roleId).Scan(&result).Error
+				" on e.id = a.entry_id and a.role_id=? where e.type=1 and e.kind in (0,2) order by e.sort", roleId).Scan(&result).Error
 		}
 	}
 	return
