@@ -8,10 +8,10 @@ create table sys_tenant
 (
     id            bigserial primary key,
     name          text,
-    status        integer      default 1, --1有效,2无效
-    role_admin    int not null default 1,--管理员角色id
-    root_org_id   int not null default 1,--根组织编号
-    root_org_code int not null default '100'
+    status        integer       default 1, --1有效,2无效
+    role_admin    int  not null default 1,--管理员角色id
+    root_org_id   int  not null default 1,--根组织编号
+    root_org_code text not null default '100'
 );
 insert into sys_tenant(id, name)
 values (1, 'default');

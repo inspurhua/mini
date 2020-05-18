@@ -8,32 +8,44 @@ func TenantList() (r []bean.Tenant, err error) {
 }
 
 func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
+	tx := db.Begin()
 	result = Tenant
-	err = db.Create(&result).Error
+	err = tx.Create(&result).Error
 	if err != nil {
+		tx.Rollback()
 		return
 	}
-	r, err := RoleCreate(bean.Role{
-		Name:   result.Name + "admin",
-		Status: 1,
-	})
+	r := bean.Role{
+		Name:     result.Name + "管理员",
+		Status:   1,
+		TenantId: result.ID,
+	}
+	err = tx.Create(&r).Error
 	if err != nil {
+		tx.Rollback()
 		return
 	}
-	o, err := OrgCreate(bean.Org{
-		Name: result.Name,
-		Code: "100",
-		PId:  0,
-		Sort: 0,
-	})
+	o := bean.Org{
+		Name:     result.Name,
+		Code:     "100",
+		PId:      0,
+		Sort:     0,
+		TenantId: result.ID,
+	}
+	err = tx.Create(&o).Error
 	if err != nil {
+		tx.Rollback()
 		return
 	}
 	result.RoleAdmin = r.ID
 	result.RootOrgId = o.ID
 	result.RootOrgCode = o.Code
-	result, err = TenantUpdate(result)
-
+	err = tx.Model(&result).Update(result).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
 	return
 }
 
