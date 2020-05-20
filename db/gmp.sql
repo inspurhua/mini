@@ -52,6 +52,7 @@ create table sys_quality
 (
     id        bigserial primary key,
     key_id    int,--可以是产品和物料,中间品
+    batch     text,--默认是批次
     --五项与key有关的字段
     key_t0    text,
     key_t1    text,
@@ -124,7 +125,8 @@ create table sys_quality
     data_n17  numeric,
     data_n18  numeric,
     data_n19  numeric,
-
+    qc_date   date,--质检日期
+    create_at timestamp without time zone default localtimestamp(0),
     tenant_id int not null
 );
 drop table if exists sys_quality_chart;
