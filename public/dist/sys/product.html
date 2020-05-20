@@ -243,7 +243,7 @@
           <div class="layui-form-item">
               <label class="layui-form-label required">状态</label>
               <div class="layui-input-block">
-                  <input {{ d.status==2   'checked':'' }} type="radio" name="status"
+                  <input {{ d.status==2 ?  'checked':'' }} type="radio" name="status"
                                                           value="2" title="禁用"/>
                   <input {{ d.status==1 ? 'checked':'' }}
                           type="radio" name="status" value="1" title="正常"/>
