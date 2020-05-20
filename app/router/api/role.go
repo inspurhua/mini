@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/dao"
@@ -49,6 +50,12 @@ func RoleDelete(c *gin.Context) {
 		return
 	}
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	t, err := dao.TenantRead(TenantId)
+	if err != nil || t.RoleAdmin == id {
+		util.AbortNewResultErrorOfClient(c,
+			errors.New(err.Error()+"此角色不能删除"))
+		return
+	}
 	err = dao.RoleDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)

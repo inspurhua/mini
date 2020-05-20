@@ -56,7 +56,12 @@ func OrgDelete(c *gin.Context) {
 	}
 
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
-
+	t, err := dao.TenantRead(TenantId)
+	if err != nil || t.RootOrgId == id {
+		util.AbortNewResultErrorOfClient(c,
+			errors.New(err.Error()+"此组织不能删除"))
+		return
+	}
 	err = dao.OrgDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)

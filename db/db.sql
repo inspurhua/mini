@@ -100,7 +100,20 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
 
        (1300, '日志', 1, 1, '', 'sys/log.html', 'fa fa-list', '_self', 1, 0),
        (1301, '日志列表', 1300, 2, 'GET', '/api/log', '', '', 1, 0),
-       (2, '业务管理', 0, 1, '', '', '', '', 1, 2);
+       (2, '业务管理', 0, 1, '', '', '', '', 1, 2),
+
+       (2000, '产品', 2, 1, '', 'sys/product.html', 'fa fa-product-hunt', '_self', 1, 2),
+       (2001, '产品列表', 2000, 2, 'GET', '/api/product', '', '', 1, 2),
+       (2002, '添加产品', 2000, 2, 'POST', '/api/product', '', '', 2, 2),
+       (2003, '编辑产品', 2000, 2, 'PUT', '/api/product/:id', '', '', 3, 2),
+       (2004, '删除产品', 2000, 2, 'DELETE', '/api/product/:id', '', '', 4, 2)
+
+
+
+
+;
+
+
 SELECT setval('sys_entry_id_seq', (select max(id) from sys_entry), true);
 drop table if exists sys_auth;
 create table sys_auth
