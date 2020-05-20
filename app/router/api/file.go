@@ -1,14 +1,17 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/dao"
 	"huage.tech/mini/app/util"
 	"os"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
+	"unicode"
 )
 
 func FileCreate(c *gin.Context) {
@@ -18,8 +21,25 @@ func FileCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
+	//存储类型,只能是英文字符,common or tmp
+	StoreType := strings.Trim(c.DefaultPostForm("store", ""), " ")
+	if StoreType == "" || !(strings.Contains("<tmp><common>", "<"+StoreType+">")) {
+		util.AbortNewResultErrorOfClient(c, errors.New("请提供store参数,tmp为临时存储,common为永久存储"))
+		return
+	}
+	//业务文件类型,about a业务还是b业务
+	AboutType := strings.Trim(c.DefaultPostForm("about", "default"), " ")
+	if AboutType != "" {
+		for _, r := range AboutType {
+			if !unicode.IsLetter(r) {
+				util.AbortNewResultErrorOfClient(c, err)
+				return
+			}
+		}
+		AboutType = AboutType + "/"
+	}
 
-	urlPrefix := "/uploads/" + time.Now().Format("20060102") + "/"
+	urlPrefix := "/uploads/" + StoreType + AboutType + time.Now().Format("20060102") + "/"
 	path := "./public/dist" + urlPrefix
 	syscall.Umask(0)
 	os.MkdirAll(path, 0777)

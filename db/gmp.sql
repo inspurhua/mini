@@ -13,9 +13,10 @@ create table sys_product
     validity        text,--有效期
     standard        text,--执行标准
     approval_number text,--批准文号
-    process_file    text,--生产工艺文件编号
-    quality_file    text,--质量标准文件编号
-    process_file    text,--工序描述文件,word表格
+    quality_name    text,--质量标准文件编号
+    process_name    text,--生产工艺文件编号
+    process_file    int,--工序描述文件,word表格
+    status          int default 1,--状态|radio|1:正常,2:停产
     tenant_id       int not null
 );
 comment on COLUMN sys_product.tenant_id is '租户';

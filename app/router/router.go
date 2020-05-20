@@ -64,6 +64,12 @@ func NewRouter() *gin.Engine {
 			_auth.PUT("/user/:id", api.UserUpdate)
 			_auth.GET("/user/:id", api.UserRead)
 
+			_auth.GET("/product", api.ProductList)
+			_auth.POST("/product", api.ProductCreate)
+			_auth.DELETE("/product/:id", api.ProductDelete)
+			_auth.PUT("/product/:id", api.ProductUpdate)
+			_auth.GET("/product/:id", api.ProductRead)
+
 		}
 	}
 
