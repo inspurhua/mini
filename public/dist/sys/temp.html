@@ -1,0 +1,177 @@
+<div class="layuimini-main">
+  <div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+      <label class="layui-form-label required">产品代号</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="code"
+          lay-verify="required"
+          lay-reqtext="产品代号不能为空"
+          placeholder="请输入产品代号"
+          value="{{ d.code || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">产品名称</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="name"
+          lay-verify="required"
+          lay-reqtext="产品名称不能为空"
+          placeholder="请输入产品名称"
+          value="{{ d.name || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">规格</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="specs"
+          lay-verify="required"
+          lay-reqtext="规格不能为空"
+          placeholder="请输入规格"
+          value="{{ d.specs || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">包装规格</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="pack_specs"
+          lay-verify="required"
+          lay-reqtext="包装规格不能为空"
+          placeholder="请输入包装规格"
+          value="{{ d.pack_specs || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">包装规格</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="pack_specs"
+          lay-verify="required"
+          lay-reqtext="包装规格不能为空"
+          placeholder="请输入包装规格"
+          value="{{ d.pack_specs || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label required">有效期</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="validity"
+          lay-verify="required"
+          lay-reqtext="有效期不能为空"
+          placeholder="请输入有效期"
+          value="{{ d.validity || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">执行标准</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="standard"
+          lay-verify="required"
+          lay-reqtext="执行标准不能为空"
+          placeholder="请输入执行标准"
+          value="{{ d.standard || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label required">批准文号</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="approval_number"
+          lay-verify="required"
+          lay-reqtext="批准文号不能为空"
+          placeholder="请输入批准文号"
+          value="{{ d.approval_number || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label required">质量标准文件编号</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="quality_name"
+          lay-verify="required"
+          lay-reqtext="质量标准文件编号不能为空"
+          placeholder="请输入质量标准文件编号"
+          value="{{ d.quality_name || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label required">生产工艺文件编号</label>
+      <div class="layui-input-block">
+        <input
+          type="text"
+          name="process_name"
+          lay-verify="required"
+          lay-reqtext="生产工艺文件编号不能为空"
+          placeholder="请输入生产工艺文件编号"
+          value="{{ d.process_name || '' }}"
+          class="layui-input"
+        />
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label required">工序描述文件</label>
+      <div class="layui-input-block">
+        <button type="button" class="layui-btn" id="process_name">
+          <i class="layui-icon">&#xe67c;</i>上传
+        </button>
+        <input
+          type="hidden"
+          name="process_name"
+          value="{{ d.process_name || '' }}"
+        />
+        <tip>请上传word文件</tip>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label required">状态</label>
+      <div class="layui-input-block">
+        <input {{ d.status==2 ? 'checked':'' }} type="radio" name="status"
+        value="2" title="禁用"/> <input {{ d.status==1 ? 'checked':'' }}
+        type="radio" name="status" value="1" title="正常"/>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+</div>

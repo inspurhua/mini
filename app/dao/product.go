@@ -2,9 +2,10 @@ package dao
 
 import (
 	"huage.tech/mini/app/bean"
+	"huage.tech/mini/app/config"
 )
 
-func ProductList(tenantId int64, name string, offset, limit int64) (r []bean.Product, err error) {
+func ProductList(tenantId int64, name string, offset, limit int64) (r []bean.ProductWithFile, count int, err error) {
 	err = db.Model(&bean.Product{}).
 		Where("tenant_id=?", tenantId).
 		Where("name like ?", "%"+name+"%").
@@ -12,11 +13,12 @@ func ProductList(tenantId int64, name string, offset, limit int64) (r []bean.Pro
 	if err != nil {
 		return
 	}
-	err = db.
-		Where("tenant_id=?", tenantId).
-		Where("name like ?", "%"+name+"%").
-		Offset(offset).Limit(limit).
-		Find(&r).Error
+
+	err = db.Raw("select a.*,f.name as File,f.url from "+config.Prefix+"product a left join "+
+		config.Prefix+
+		"file f on a.process_file=f.id where a.tenant_id=? and a.name like ? offset ? limit ?",
+		tenantId, "%"+name+"%", offset, limit).Scan(&r).Error
+
 	return
 
 }
@@ -35,10 +37,11 @@ func ProductDelete(tenantId, id int64) (err error) {
 	return
 }
 
-func ProductRead(tenantId, id int64) (result bean.Product, err error) {
-	err = db.
-		Where("tenant_id=?", tenantId).
-		Where("id=?", id).First(&result).Error
+func ProductRead(tenantId, id int64) (result bean.ProductWithFile, err error) {
+	err = db.Raw("select a.*,f.name as File,f.url from "+config.Prefix+"product a left join "+
+		config.Prefix+
+		"file f on a.process_file=f.id where a.tenant_id=? and a.id=?",
+		tenantId, id).Scan(&result).Error
 
 	return
 }

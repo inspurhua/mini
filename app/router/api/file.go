@@ -27,6 +27,7 @@ func FileCreate(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, errors.New("请提供store参数,tmp为临时存储,common为永久存储"))
 		return
 	}
+	StoreType = StoreType + "/"
 	//业务文件类型,about a业务还是b业务
 	AboutType := strings.Trim(c.DefaultPostForm("about", "default"), " ")
 	if AboutType != "" {

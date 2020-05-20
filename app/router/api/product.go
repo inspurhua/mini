@@ -38,12 +38,12 @@ func ProductList(c *gin.Context) {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
-	r, err := dao.ProductList(TenantId, name, offset, limit)
+	r, count, err := dao.ProductList(TenantId, name, offset, limit)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
 	}
-	c.JSON(200, util.NewResultOKofRead(r, len(r)))
+	c.JSON(200, util.NewResultOKofRead(r, count))
 	return
 }
 
@@ -55,7 +55,7 @@ func ProductDelete(c *gin.Context) {
 		return
 	}
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
- 
+
 	err = dao.ProductDelete(TenantId, id)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)

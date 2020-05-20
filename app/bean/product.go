@@ -24,3 +24,9 @@ type Product struct {
 func (Product) TableName() string {
 	return config.Prefix + "product"
 }
+
+type ProductWithFile struct {
+	Product
+	Url  string `json:"url"`
+	File string `json:"file"`
+}

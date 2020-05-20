@@ -1,0 +1,393 @@
+<div class="layuimini-container layuimini-page-anim">
+  <div class="layuimini-main">
+    <script type="text/html" id="topToolbar">
+      <div class="layui-btn-container">
+          <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加产品</button>
+          </button>
+      </div>
+    </script>
+
+    <table
+      class="layui-hide"
+      id="currentTableId"
+      lay-filter="currentTableFilter"
+    ></table>
+  </div>
+</div>
+<script type="text/html" id="currentTableBar">
+  <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+</script>
+<script type="text/html" id="tpl_curd">
+  <div class="layuimini-main">
+    <div class="layui-form layuimini-form">
+      <div class="layui-form-item">
+        <label class="layui-form-label required">产品代号</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="code"
+            lay-verify="required"
+            lay-reqtext="产品代号不能为空"
+            placeholder="请输入产品代号"
+            value="{{ d.code || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">产品名称</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="name"
+            lay-verify="required"
+            lay-reqtext="产品名称不能为空"
+            placeholder="请输入产品名称"
+            value="{{ d.name || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">规格</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="specs"
+            lay-verify="required"
+            lay-reqtext="规格不能为空"
+            placeholder="请输入规格"
+            value="{{ d.specs || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">包装规格</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="pack_specs"
+            lay-verify="required"
+            lay-reqtext="包装规格不能为空"
+            placeholder="请输入包装规格"
+            value="{{ d.pack_specs || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">批量</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="batch"
+            lay-verify="required"
+            lay-reqtext="批量不能为空"
+            placeholder="请输入批量"
+            value="{{ d.batch || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">产量单位</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="batch_unit"
+            lay-verify="required"
+            lay-reqtext="产量单位不能为空"
+            placeholder="请输入产量单位"
+            value="{{ d.batch_unit || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">贮藏条件</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="storage"
+            lay-verify="required"
+            lay-reqtext="贮藏条件不能为空"
+            placeholder="请输入贮藏条件"
+            value="{{ d.storage || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">有效期</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="validity"
+            lay-verify="required"
+            lay-reqtext="有效期不能为空"
+            placeholder="请输入有效期"
+            value="{{ d.validity || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">执行标准</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="standard"
+            lay-verify="required"
+            lay-reqtext="执行标准不能为空"
+            placeholder="请输入执行标准"
+            value="{{ d.standard || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label required">批准文号</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="approval_number"
+            lay-verify="required"
+            lay-reqtext="批准文号不能为空"
+            placeholder="请输入批准文号"
+            value="{{ d.approval_number || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label required">质量标准文件编号</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="quality_name"
+            lay-verify="required"
+            lay-reqtext="质量标准文件编号不能为空"
+            placeholder="请输入质量标准文件编号"
+            value="{{ d.quality_name || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label required">生产工艺文件编号</label>
+        <div class="layui-input-block">
+          <input
+            type="text"
+            name="process_name"
+            lay-verify="required"
+            lay-reqtext="生产工艺文件编号不能为空"
+            placeholder="请输入生产工艺文件编号"
+            value="{{ d.process_name || '' }}"
+            class="layui-input"
+          />
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label required">工序描述文件</label>
+        <div class="layui-input-block">
+          <button type="button" class="layui-btn" id="btn_process_file">
+            <i class="layui-icon">&#xe67c;</i>上传
+          </button>
+          <input
+            id="process_file"
+            type="hidden"
+            name="process_file"
+            value="{{ d.process_file || '' }}"
+          />
+          &nbsp;&nbsp;<a id="process_file_name" href="{{d.url}}" target="_blank">{{ d.file }}</a>
+          <tip>word格式</tip>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label required">状态</label>
+        <div class="layui-input-block">
+          <input {{ d.status==2 ? 'checked':'' }} type="radio" name="status"
+          value="2" title="禁用"/> <input {{ d.status==1 ? 'checked':'' }}
+          type="radio" name="status" value="1" title="正常"/>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script>
+  layui.use(
+    [
+      "form",
+      "table",
+      "miniPage",
+      "element",
+      "conf",
+      "laytpl",
+      "jquery",
+      "treetable",
+      "miniCurd",
+      "miniAdmin",
+      "upload",
+    ],
+    function () {
+      var $ = layui.jquery,
+        form = layui.form,
+        table = layui.table,
+        laytpl = layui.laytpl,
+        config = layui.conf,
+        upload = layui.upload,
+        treetable = layui.treetable,
+        miniCurd = layui.miniCurd,
+        miniPage = layui.miniPage,
+        miniAdmin = layui.miniAdmin;
+      loadTable();
+
+      function loadTable() {
+        table.render({
+          elem: "#currentTableId",
+          url: config.server + "/api/product",
+          headers: {
+            token: sessionStorage["token"],
+          },
+          toolbar: "#topToolbar",
+          defaultToolbar: [
+            "filter",
+            "exports",
+            "print",
+            {
+              title: "提示",
+              layEvent: "LAYTABLE_TIPS",
+              icon: "layui-icon-tips",
+            },
+          ],
+          cols: [
+            [
+              { field: "id", title: "ID" },
+              { field: "code", minWidth: 80, title: "代号" },
+              { field: "name", minWidth: 80, title: "产品名称" },
+              { field: "standard", minWidth: 80, title: "执行标准" },
+              { field: "approval_number", minWidth: 80, title: "批准文号" },
+              {
+                field: "quality_name",
+                minWidth: 80,
+                title: "质量标准文件编号",
+              },
+              {
+                field: "process_name",
+                minWidth: 80,
+                title: "生产工艺文件编号",
+              },
+              {
+                field: "status",
+                width: 80,
+                title: "状态",
+                templet: function (d) {
+                  return d.status == 1 ? "正常" : "禁用";
+                },
+              },
+
+              {
+                title: "操作",
+                minWidth: 120,
+                templet: "#currentTableBar",
+                fixed: "right",
+                align: "center",
+              },
+            ],
+          ],
+          limit: 20,
+          page: true,
+        });
+      }
+
+      function display() {
+        /**
+         * 上传文件
+         */
+        upload.render({
+          elem: "#btn_process_file", //绑定元素
+          url: config.server + "/api/file",
+          exts: "doc|docx",
+          number: 1,
+          data: { store: "common", about: "product" },
+          headers: {
+            token: sessionStorage["token"],
+          },
+
+          done: function (res) {
+            //上传完毕回调
+            miniAdmin.success(res.msg);
+            $("#process_file").val(res.data.id);
+            $("#process_file_name")
+              .text(res.data.name)
+              .attr("href", res.data.url);
+          },
+          error: function () {
+            //请求异常回调
+            miniAdmin.error(res.msg);
+          },
+        });
+      }
+
+      /**
+       * toolbar事件监听
+       */
+      table.on("toolbar(currentTableFilter)", function (obj) {
+        if (obj.event === "add") {
+          // 监听添加操作
+          miniCurd({
+            event: "add",
+            titile: "添加",
+            url: "/api/product",
+            data: { status: 1 },
+            done: function () {
+              loadTable();
+            },
+            display: display,
+          });
+        }
+      });
+      /**
+       * tool事件监听
+       */
+      table.on("tool(currentTableFilter)", function (obj) {
+        var data = obj.data;
+        if (obj.event === "edit") {
+          miniCurd({
+            event: "edit",
+            titile: "修改",
+            url: "/api/product",
+            data: obj.data,
+            done: function () {
+              loadTable();
+            },
+            display: display,
+          });
+        } else if (obj.event === "delete") {
+          miniCurd({
+            event: "delete",
+            titile: "删除",
+            url: "/api/product",
+            data: obj.data,
+            done: function () {
+              loadTable();
+            },
+          });
+        }
+      });
+    }
+  );
+</script>
