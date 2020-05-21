@@ -3,7 +3,10 @@ layui.define([], function (exports) {
 
     var _MOD = 'conf';
     var config = {
-        server: "http://127.0.0.1:8000"
+        server: "http://127.0.0.1:8000",
+        headers:{
+            token:sessionStorage['token']
+        }
     };
 
 

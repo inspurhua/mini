@@ -50,9 +50,7 @@ layui.define(
         layer.confirm("真的删除吗?", function(index) {
           $.ajax({
             type: "DELETE",
-            headers: {
-              token: sessionStorage["token"]
-            },
+            headers: config.headers,
             url: url,
             dataType: "json"
           })
@@ -100,9 +98,7 @@ layui.define(
         form.on("submit(saveBtn)", function(data) {
           $.ajax({
             type: type,
-            headers: {
-              token: sessionStorage["token"]
-            },
+            headers: config.headers,
             data: data.field,
             url: url,
             dataType: "json"

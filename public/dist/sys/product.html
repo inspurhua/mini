@@ -291,9 +291,7 @@
         table.render({
           elem: "#currentTableId",
           url: config.server + "/api/product",
-          headers: {
-            token: sessionStorage["token"],
-          },
+          headers:  config.headers,
           toolbar: "#topToolbar",
           defaultToolbar: [
             "filter",
