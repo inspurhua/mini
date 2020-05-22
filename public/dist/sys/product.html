@@ -291,7 +291,7 @@
         table.render({
           elem: "#currentTableId",
           url: config.server + "/api/product",
-          headers:  config.headers,
+          headers: config.headers,
           toolbar: "#topToolbar",
           defaultToolbar: [
             "filter",
@@ -379,15 +379,12 @@
       form.on("submit(searchBarFilter)", function (data) {
         //执行搜索重载
         console.log(data);
-        table.reload(
-          "currentTableId",
-          {
-            page: {
-              curr: 1,
-            },
-            where: data.field,
-          }
-        );
+        table.reload("currentTableId", {
+          page: {
+            curr: 1,
+          },
+          where: data.field,
+        });
 
         return false;
       });

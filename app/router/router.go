@@ -70,6 +70,8 @@ func NewRouter() *gin.Engine {
 			_auth.PUT("/product/:id", api.ProductUpdate)
 			_auth.GET("/product/:id", api.ProductRead)
 
+			_auth.GET("/quality_info/:id", api.QualityInfoList)
+			_auth.POST("/quality_info/:id", api.QualityInfoUpdate)
 		}
 	}
 

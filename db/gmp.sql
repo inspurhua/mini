@@ -46,6 +46,7 @@ create table sys_material
     type_id     int,
     tenant_id   int not null
 );
+--物料和参数体系
 
 drop table if exists sys_quality;
 create table sys_quality
@@ -54,23 +55,23 @@ create table sys_quality
     key_id    int,--可以是产品和物料,中间品
     batch     text,--默认是批次
     --五项与key有关的字段
-    key_t0    text,
-    key_t1    text,
-    key_t2    text,
-    key_t3    text,
-    key_t4    text,
+    key_t00    text,
+    key_t01    text,
+    key_t02    text,
+    key_t03    text,
+    key_t04    text,
 
     --20项文本数据
-    data_t0   text,
-    data_t1   text,
-    data_t2   text,
-    data_t3   text,
-    data_t4   text,
-    data_t5   text,
-    data_t6   text,
-    data_t7   text,
-    data_t8   text,
-    data_t9   text,
+    data_t00   text,
+    data_t01   text,
+    data_t02   text,
+    data_t03   text,
+    data_t04   text,
+    data_t05   text,
+    data_t06   text,
+    data_t07   text,
+    data_t08   text,
+    data_t09   text,
     data_t10  text,
     data_t11  text,
     data_t12  text,
@@ -83,16 +84,16 @@ create table sys_quality
     data_t19  text,
 
 --20项整型数据
-    data_i0   int,
-    data_i1   int,
-    data_i2   int,
-    data_i3   int,
-    data_i4   int,
-    data_i5   int,
-    data_i6   int,
-    data_i7   int,
-    data_i8   int,
-    data_i9   int,
+    data_i00   int,
+    data_i01   int,
+    data_i02   int,
+    data_i03   int,
+    data_i04   int,
+    data_i05   int,
+    data_i06   int,
+    data_i07   int,
+    data_i08   int,
+    data_i09   int,
     data_i10  int,
     data_i11  int,
     data_i12  int,
@@ -105,16 +106,16 @@ create table sys_quality
     data_i19  int,
 
 --20项小数数据
-    data_n0   numeric,
-    data_n1   numeric,
-    data_n2   numeric,
-    data_n3   numeric,
-    data_n4   numeric,
-    data_n5   numeric,
-    data_n6   numeric,
-    data_n7   numeric,
-    data_n8   numeric,
-    data_n9   numeric,
+    data_n00   numeric,
+    data_n01   numeric,
+    data_n02   numeric,
+    data_n03   numeric,
+    data_n04   numeric,
+    data_n05   numeric,
+    data_n06   numeric,
+    data_n07   numeric,
+    data_n08   numeric,
+    data_n09   numeric,
     data_n10  numeric,
     data_n11  numeric,
     data_n12  numeric,
@@ -151,9 +152,6 @@ create table sys_quality_info
     refer_text   text,--参数文本显示
     refer_expr   text,--左闭右开区间表示:3,(>=3);,3(<3);3,5(>=3 <5),可以自动解析text 生成
     refer_unit   text,--单位
-    zero_value   text default '未检出',
-    chart_column text,--chart水平轴
-    chart_type   int  default 1,--1.趋势图
     sort         int  default 1,
     tenant_id    int not null
 );

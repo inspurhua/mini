@@ -28,5 +28,6 @@ layui.config({
     wangEditor: 'wangEditor/wangEditor', // wangEditor富文本扩展
     layarea: 'layarea/layarea', //  省市县区三级联动下拉选择器
     conf: 'conf/config', //
+    tools: 'tools/tools', //
     treeSelect: 'treeSelect/treeSelect',
 });
