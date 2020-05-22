@@ -38,7 +38,7 @@
   <body>
     <div class="layuimini-container layuimini-page-anim">
       <script type="text/html" id="toolbar">
-       
+
 
         <div style="color:#FF5722;">
             <div>
@@ -48,14 +48,17 @@
                             1.A条件类型的字段,适合产品或者物料紧密联系的数据,B数据类型的字段,适合产品或者物料的指标数据.
                         </li>
                         <li>
-                            2.排序号只能填写数字.
+                            2.分组名称相同的可以合并到一个组中.
+                        </li>
+                        <li>
+                            3.排序号只能填写数字.
                         </li>
                     </ul>
                 </p>
                 <p></p>
                 <p></p>
             </div>
-           
+
         </div>
         <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 保存</button>
       </script>
@@ -71,35 +74,54 @@
     <script src="../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
     <script>
       layui.use(
-        ["form", "table", "element", "conf", "jquery", "miniAdmin", "tools"],
+        [
+          "form",
+          "table",
+          "element",
+          "conf",
+          "jquery",
+          "miniAdmin",
+          "tools",
+          "request",
+        ],
         function () {
           var $ = layui.jquery,
             tools = layui.tools,
             table = layui.table,
             config = layui.conf,
+            request = layui.request,
             miniAdmin = layui.miniAdmin;
-
+          var id = tools.param(location.href, "id");
           loadTable();
 
           function loadTable() {
             table.render({
               elem: "#currentTableId",
               toolbar: "#toolbar",
-              url:
-                config.server +
-                "/api/quality_info/" +
-                tools.param(location.href, "id"),
+              url: config.server + "/api/quality_info/" + id,
               headers: config.headers,
               defaultToolbar: [],
               cols: [
                 [
+                  { checkbox: true },
                   { field: "type", title: "类型" },
                   { field: "col_name", minWidth: 80, title: "字段代码" },
+                  {
+                    field: "data_type",
+                    minWidth: 80,
+                    title: "字段类型",
+                  },
                   {
                     edit: true,
                     field: "col_title",
                     minWidth: 80,
                     title: "中文名称",
+                  },
+                  {
+                    edit: true,
+                    field: "group_title",
+                    minWidth: 80,
+                    title: "分组名称",
                   },
                   {
                     edit: true,
@@ -113,12 +135,12 @@
                     minWidth: 80,
                     title: "指标单位",
                   },
-                //   {
-                //     edit: true,
-                //     field: "refer_expr",
-                //     minWidth: 80,
-                //     title: "指标标准区间",
-                //   },
+                  //   {
+                  //     edit: true,
+                  //     field: "refer_expr",
+                  //     minWidth: 80,
+                  //     title: "指标标准区间",
+                  //   },
                   {
                     edit: true,
                     field: "sort",
@@ -129,8 +151,52 @@
               ],
               limit: 1000,
               page: false,
+              parseData: function (res) {
+                //res 即为原始返回的数据
+                layui.each(res.data, function (i, item) {
+                  item.LAY_CHECKED = item.col_title.trim() != "";
+                });
+                return res;
+              },
+              done: function (d) {},
             });
           }
+          /**
+           * toolbar事件监听
+           */
+          table.on("toolbar(currentTableFilter)", function (obj) {
+            if (obj.event === "add") {
+              // 监听添加操作
+              var cs = table.checkStatus("currentTableId");
+              //检查有空的
+              let blank = -1;
+              if (
+                cs.data.some((item, index, array) => {
+                  blank = index;
+                  return item.col_title.trim() == "";
+                })
+              ) {
+                miniAdmin.error(
+                  "请填写第" +
+                    (blank + 1) +
+                    "行,字段代码是" +
+                    cs.data[blank].col_name
+                );
+                return false;
+              }
+              request(
+                config.server + "/api/quality_info/" + id,
+                "post",
+                cs.data
+              )
+                .then(function (d) {
+                  miniAdmin.success(d.msg);
+                })
+                .catch(function (d) {
+                  miniAdmin.error(d.msg);
+                });
+            }
+          });
         }
       );
     </script>

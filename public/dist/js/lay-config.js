@@ -29,5 +29,6 @@ layui.config({
     layarea: 'layarea/layarea', //  省市县区三级联动下拉选择器
     conf: 'conf/config', //
     tools: 'tools/tools', //
+    request:'request/request',
     treeSelect: 'treeSelect/treeSelect',
 });

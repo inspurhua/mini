@@ -1,5 +1,6 @@
 layui.define(["jquery", "layer"],
     function (exports) {
+        var _MOD = "request";
         var $ = layui.jquery,
             layer = layui.layer;
         let request = function (url, method = "get", data = {}) {
@@ -30,7 +31,7 @@ layui.define(["jquery", "layer"],
                     error(err) {
                         err.responseJSON && layer.msg(err.responseJSON.msg);
                         if (err.responseJSON.code == 401) {
-                            window.location.href = "/admin/login.html";
+                            window.location.href = "/login.html";
                         }
                         reject({
                             code: 200,
@@ -41,5 +42,5 @@ layui.define(["jquery", "layer"],
                 })
             })
         }
-        exports('request', request);
+        exports(_MOD, request);
     });
