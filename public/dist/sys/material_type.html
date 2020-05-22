@@ -22,21 +22,21 @@
     <div class="layuimini-main">
         <div class="layui-form layuimini-form">
             <div class="layui-form-item">
-                <label class="layui-form-label required">组织名称</label>
+                <label class="layui-form-label required">物料类别名称</label>
                 <div class="layui-input-block">
                     <input type="text" name="name"
                            lay-verify="required"
-                           lay-reqtext="名称不能为空" placeholder="请输入组织名称"
+                           lay-reqtext="名称不能为空" placeholder="请输入物料类别名称"
                            value="{{ d.name || '' }}"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label required">组织代码</label>
+                <label class="layui-form-label required">物料类别代码</label>
                 <div class="layui-input-block">
                     <input type="text" name="code"
                            lay-verify="required"
-                           lay-reqtext="组织代码不能为空" placeholder="请输入组织代码"
+                           lay-reqtext="物料类别代码不能为空" placeholder="请输入物料类别代码"
                            value="{{ d.code || '' }}"
                            class="layui-input">
                     <tip>请遵循3-3-3结构</tip>
@@ -92,7 +92,7 @@
                     },
                     page: false,
                     cols: [[
-                        { field: 'name', minWidth: 200, title: '组织名称' },
+                        { field: 'name', minWidth: 200, title: '物料类别名称' },
                         { field: 'code', title: '编码' },
                         { field: 'sort', width: 80, align: 'center', title: '排序号' },
                         { templet: '#auth-state', minWidth: 120, align: 'center', title: '操作' }
