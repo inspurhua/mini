@@ -133,10 +133,10 @@ func MaterialTypeList(c *gin.Context) {
 }
 
 func MaterialTypeTree(c *gin.Context) {
-	//roleId, _ := c.MustGet("ROLE_ID").(int64)
-	MaterialTypeId, _ := c.MustGet("MaterialType_ID").(int64)
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
-	MaterialType, _ := dao.MaterialTypeRead(TenantId, MaterialTypeId)
+	t, _ := dao.TenantRead(TenantId)
+
+	MaterialType, _ := dao.MaterialTypeRead(TenantId, t.RootMaterialTypeId)
 
 	v, err := dao.MaterialTypeTree(TenantId, MaterialType.Code)
 	if err != nil {

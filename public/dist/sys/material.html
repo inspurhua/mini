@@ -2,7 +2,7 @@
   <div class="layuimini-main">
     <script type="text/html" id="topToolbar">
       <div class="layui-btn-container">
-          <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加产品</button>
+          <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加物料</button>
           </button>
       </div>
     </script>
@@ -12,7 +12,13 @@
         <form class="layui-form layui-form-pane" action="">
           <div class="layui-form-item">
             <div class="layui-inline">
-              <label class="layui-form-label">产品名称</label>
+              <label class="layui-form-label">类别</label>
+              <div class="layui-input-block">
+                <input id="type" name="type" type="text">
+              </div>
+            </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">物料名称</label>
               <div class="layui-input-inline">
                 <input
                   type="text"
@@ -53,29 +59,36 @@
 <script type="text/html" id="tpl_curd">
   <div class="layuimini-main">
       <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label required">类别</label>
+          <div class="layui-input-block">
+            <input type="text" id="type1" name="type_id" lay-filter="type1" lay-verify="required"   lay-reqtext="类别不能为空"   value="{{ d.type_id || '' }}"
+            class="layui-input">
+          </div>
+     </div>
           <div class="layui-form-item">
-              <label class="layui-form-label required">产品代号</label>
+              <label class="layui-form-label required">物料代号</label>
               <div class="layui-input-block">
                   <input
                           type="text"
                           name="code"
                           lay-verify="required"
-                          lay-reqtext="产品代号不能为空"
-                          placeholder="请输入产品代号"
+                          lay-reqtext="物料代号不能为空"
+                          placeholder="请输入物料代号"
                           value="{{ d.code || '' }}"
                           class="layui-input"
                   />
               </div>
           </div>
           <div class="layui-form-item">
-              <label class="layui-form-label required">产品名称</label>
+              <label class="layui-form-label required">物料名称</label>
               <div class="layui-input-block">
                   <input
                           type="text"
                           name="name"
                           lay-verify="required"
-                          lay-reqtext="产品名称不能为空"
-                          placeholder="请输入产品名称"
+                          lay-reqtext="物料名称不能为空"
+                          placeholder="请输入物料名称"
                           value="{{ d.name || '' }}"
                           class="layui-input"
                   />
@@ -274,6 +287,7 @@
       "miniCurd",
       "miniAdmin",
       "upload",
+      "treeSelect",
       "tools",
     ],
     function () {
@@ -284,12 +298,13 @@
         config = layui.conf,
         upload = layui.upload,
         tools = layui.tools,
+        treeSelect = layui.treeSelect,
         treetable = layui.treetable,
         miniCurd = layui.miniCurd,
         miniPage = layui.miniPage,
         miniAdmin = layui.miniAdmin;
       loadTable();
-
+      loadType('#type');
       function loadTable() {
         table.render({
           elem: "#currentTableId",
@@ -310,7 +325,7 @@
             [
               { field: "id", title: "ID" },
               { field: "code", minWidth: 80, title: "代号" },
-              { field: "name", minWidth: 80, title: "产品名称" },
+              { field: "name", minWidth: 80, title: "物料名称" },
               { field: "standard", minWidth: 80, title: "执行标准" },
               { field: "approval_number", minWidth: 80, title: "批准文号" },
               {
@@ -345,6 +360,32 @@
           page: true,
         });
       }
+
+
+      function loadType(dom, value) {
+        treeSelect.render({
+          // 选择器
+          elem: dom,
+          // 数据
+          headers: {
+            token:sessionStorage["token"]
+          },
+          data: config.server + "/api/material_type_tree" ,
+          // 异步加载方式：get/post，默认get
+          type: "get",
+          // 点击回调
+          click: function(d) {
+            // console.log(d);
+          },
+          // 加载完成后的回调函数
+          success: function(d) {
+            // console.log(d);
+            //                选中节点，根据id筛选
+            value && treeSelect.checkNode("type1", value);
+          }
+        });
+      }
+      
 
       function display() {
         /**

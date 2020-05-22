@@ -1,23 +1,34 @@
 package dao
 
 import (
+	"fmt"
 	"huage.tech/mini/app/bean"
 	"huage.tech/mini/app/config"
 )
 
-func MaterialList(tenantId int64, name string, offset, limit int64) (r []bean.MaterialWithFile, count int, err error) {
-	err = db.Model(&bean.Material{}).
-		Where("tenant_id=?", tenantId).
-		Where("name like ?", "%"+name+"%").
-		Count(&count).Error
+func MaterialList(tenantId int64, name string, typeId int64, offset, limit int64) (r []bean.MaterialWithFile, count int, err error) {
+	countSql := `select count(id) as count from sys_material where tenant_id=? and name like ? `
+	countParam := []interface{}{tenantId, "%" + name + "%"}
+
+	retSql := "select a.*,f.name as File,f.url from " + config.Prefix + "material a left join " +
+		config.Prefix +
+		"file f on a.process_file=f.id where a.tenant_id=? and a.name like ? "
+	retParam := []interface{}{tenantId, "%" + name + "%"}
+	if typeId > 0 {
+		countSql += ` and type_id = ? `
+		countParam = append(countParam, typeId)
+		retSql += ` and type_id = ? `
+		retParam = append(retParam, typeId)
+	}
+	fmt.Println(countSql)
+	fmt.Println(countParam)
+	err = db.Raw(countSql, countParam...).Row().Scan(&count)
 	if err != nil {
 		return
 	}
-
-	err = db.Raw("select a.*,f.name as File,f.url from "+config.Prefix+"Material a left join "+
-		config.Prefix+
-		"file f on a.process_file=f.id where a.tenant_id=? and a.name like ? offset ? limit ?",
-		tenantId, "%"+name+"%", offset, limit).Scan(&r).Error
+	retSql += " offset ? limit ?"
+	retParam = append(retParam, offset, limit)
+	err = db.New().Raw(retSql, retParam...).Scan(&r).Error
 
 	return
 

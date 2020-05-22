@@ -30,6 +30,7 @@ func NewRouter() *gin.Engine {
 		_api.GET("/refresh", api.Refresh)
 		_api.GET("/menu", api.Entries)
 		_api.GET("/orgtree", api.OrgTree)
+		_api.GET("/material_type_tree", api.MaterialTypeTree)
 
 		_auth := _api.Group("")
 		_auth.Use(middleware.Auth())

@@ -31,3 +31,7 @@ type MaterialWithFile struct {
 	Url  string `json:"url"`
 	File string `json:"file"`
 }
+
+func (MaterialWithFile) TableName() string {
+	return config.Prefix + "material"
+}

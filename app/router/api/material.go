@@ -31,14 +31,23 @@ func MaterialCreate(c *gin.Context) {
 func MaterialList(c *gin.Context) {
 	TenantId, _ := c.MustGet("TENANT_ID").(int64)
 	name := c.DefaultQuery("name", "")
+	typeId := c.DefaultQuery("type", "0")
 	pag := c.DefaultQuery("page", "1")
 	lim := c.DefaultQuery("limit", "20")
+	if typeId == "" {
+		typeId = "0"
+	}
+	typ, err := strconv.ParseInt(typeId, 10, 64)
+	if err != nil {
+		util.AbortNewResultErrorOfServer(c, err)
+		return
+	}
 	offset, limit, err := util.PageLimit(pag, lim)
 	if err != nil {
 		util.AbortNewResultErrorOfClient(c, err)
 		return
 	}
-	r, count, err := dao.MaterialList(TenantId, name, offset, limit)
+	r, count, err := dao.MaterialList(TenantId, name, typ, offset, limit)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return
