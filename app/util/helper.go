@@ -49,6 +49,21 @@ func TreeOfOrg(rows []*bean.OrgTree) (tree []*bean.OrgTree) {
 	return
 }
 
+func TreeOfMaterialType(rows []*bean.MaterialTypeTree) (tree []*bean.MaterialTypeTree) {
+	tmp := make(map[int64]*bean.MaterialTypeTree)
+	for _, v := range rows {
+		tmp[v.ID] = v
+	}
+	for _, v := range rows {
+		if parent, ok := tmp[v.PId]; ok {
+			parent.Children = append(parent.Children, v)
+		} else {
+			tree = append(tree, v)
+		}
+	}
+	return
+}
+
 func PageLimit(pag, lim string) (offset int64, limit int64, err error) {
 	page, err := strconv.ParseInt(pag, 10, 64)
 	if err != nil {

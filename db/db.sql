@@ -6,12 +6,13 @@
 drop table if exists sys_tenant;
 create table sys_tenant
 (
-    id            bigserial primary key,
-    name          text,
-    status        integer       default 1, --1有效,2无效
-    role_admin    int  not null default 1,--管理员角色id
-    root_org_id   int  not null default 1,--根组织编号
-    root_org_code text not null default '100'
+    id                 bigserial primary key,
+    name               text,
+    status             integer       default 1, --1有效,2无效
+    role_admin         int  not null default 1,--管理员角色id
+    root_org_id        int  not null default 1,--根组织编号
+    root_org_code      text not null default '100',
+    root_material_type int           default 1
 );
 insert into sys_tenant(id, name)
 values (1, 'default');
@@ -103,15 +104,23 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
 
 
        (2, '业务管理', 0, 1, '', '', '', '', 1, 2),
-       (2000, '产品', 2, 1, '', 'sys/product.html', 'fa fa-product-hunt', '_self', 1, 2),
-       (2001, '产品列表', 2000, 2, 'GET', '/api/product', '', '', 1, 2),
-       (2002, '添加产品', 2000, 2, 'POST', '/api/product', '', '', 2, 2),
-       (2003, '编辑产品', 2000, 2, 'PUT', '/api/product/:id', '', '', 3, 2),
-       (2004, '删除产品', 2000, 2, 'DELETE', '/api/product/:id', '', '', 4, 2),
 
-       (2100, '指标', 2, 1, '', 'sys/quality_info.html', 'fa fa-thermometer', '_self', 1, 2),
-       (2101, '产品列表', 2100, 2, 'GET', '/api/quality_info/:id', '', '', 1, 2),
-       (2103, '编辑产品', 2100, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2)
+       (2100, '物料类别', 2, 1, '', 'sys/org.html', 'fa fa-sitemap', '_self', 1, 2),
+       (2101, '物料类别列表', 2100, 2, 'GET', '/api/material_type', '', '', 1, 2),
+       (2102, '添加物料类别', 2100, 2, 'POST', '/api/material_type', '', '', 2, 2),
+       (2103, '编辑物料类别', 2100, 2, 'PUT', '/api/material_type/:id', '', '', 3, 2),
+       (2104, '删除物料类别', 2100, 2, 'DELETE', '/api/material_type/:id', '', '', 4, 2),
+       (2105, '查看物料类别', 2100, 2, 'GET', '/api/material_type/:id', '', '', 5, 2),
+
+       (2200, '物料', 2, 1, '', 'sys/material.html', 'fa fa-product-hunt', '_self', 1, 2),
+       (2201, '物料列表', 2200, 2, 'GET', '/api/material', '', '', 1, 2),
+       (2202, '添加物料', 2200, 2, 'POST', '/api/material', '', '', 2, 2),
+       (2203, '编辑物料', 2200, 2, 'PUT', '/api/material/:id', '', '', 3, 2),
+       (2204, '删除物料', 2200, 2, 'DELETE', '/api/material/:id', '', '', 4, 2),
+
+       (2300, '指标', 2, 1, '', 'sys/quality_info.html', 'fa fa-thermometer', '_self', 1, 2),
+       (2301, '指标列表', 2300, 2, 'GET', '/api/quality_info/:id', '', '', 1, 2),
+       (2303, '编辑指标', 2300, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2)
 ;
 
 

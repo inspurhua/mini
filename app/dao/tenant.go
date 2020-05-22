@@ -21,6 +21,19 @@ func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 		tx.Rollback()
 		return
 	}
+	//物料根字典
+	mt := bean.MaterialType{
+		Name:     result.Name + "根类别",
+		Code:     "100",
+		PId:      0,
+		Sort:     0,
+		TenantId: result.ID,
+	}
+	err = tx.Create(&mt).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 	//role
 	r := bean.Role{
 		Name:     result.Name + "管理员",
@@ -65,6 +78,8 @@ func TenantCreate(Tenant bean.Tenant) (result bean.Tenant, err error) {
 	result.RoleAdmin = r.ID
 	result.RootOrgId = o.ID
 	result.RootOrgCode = o.Code
+	result.RootMaterialTypeId = mt.ID
+	
 	err = tx.Model(&result).Update(result).Error
 	if err != nil {
 		tx.Rollback()
