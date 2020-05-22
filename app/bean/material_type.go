@@ -12,7 +12,7 @@ type MaterialType struct {
 }
 
 func (MaterialType) TableName() string {
-	return config.Prefix + "material"
+	return config.Prefix + "material_type"
 }
 
 type MaterialTypeTree struct {
@@ -21,5 +21,5 @@ type MaterialTypeTree struct {
 }
 
 func (MaterialTypeTree) TableName() string {
-	return config.Prefix + "material"
+	return config.Prefix + "material_type"
 }

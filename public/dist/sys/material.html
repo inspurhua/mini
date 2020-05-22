@@ -293,7 +293,7 @@
       function loadTable() {
         table.render({
           elem: "#currentTableId",
-          url: config.server + "/api/product",
+          url: config.server + "/api/material",
           headers: config.headers,
           toolbar: "#topToolbar",
           defaultToolbar: [
@@ -355,7 +355,7 @@
           url: config.server + "/api/file",
           exts: "doc|docx",
           number: 1,
-          data: { store: "common", about: "product" },
+          data: { store: "common", about: "material" },
           headers: {
             token: sessionStorage["token"],
           },
@@ -399,7 +399,7 @@
           miniCurd({
             event: "add",
             titile: "添加",
-            url: "/api/product",
+            url: "/api/material",
             data: { status: 1 },
             done: function () {
               loadTable();
@@ -417,7 +417,7 @@
           miniCurd({
             event: "edit",
             titile: "修改",
-            url: "/api/product",
+            url: "/api/material",
             data: obj.data,
             done: function () {
               loadTable();
@@ -428,7 +428,7 @@
           miniCurd({
             event: "delete",
             titile: "删除",
-            url: "/api/product",
+            url: "/api/material",
             data: obj.data,
             done: function () {
               loadTable();
