@@ -1,37 +1,40 @@
 <div class="layuimini-container layuimini-page-anim">
-  <script type="text/html" id="toolbar">
-
-    <fieldset class="table-search-fieldset" id="material">
-      <legend>搜索信息</legend>
-      <div style="margin: 10px 10px 10px 10px;">
-        <form class="layui-form layui-form-pane" action="">
-          <div class="layui-form-item">
-            <div class="layui-inline">
-              <label class="layui-form-label">产品名称</label>
-              <div class="layui-input-inline">
-                <input
-                  type="text"
-                  name="name"
-                  autocomplete="off"
-                  class="layui-input"
-                />
-              </div>
-            </div>
-
-            <div class="layui-inline">
-              <button
-                type="submit"
-                class="layui-btn layui-btn-primary"
-                lay-submit
-                lay-filter="searchBarFilter"
-              >
-                <i class="layui-icon"></i> 搜 索
-              </button>
+  <fieldset class="table-search-fieldset" id="material">
+    <legend>搜索信息</legend>
+    <div style="margin: 10px 10px 10px 10px;">
+      <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">产品名称</label>
+            <div class="layui-input-inline">
+              <input
+                id="name"
+                type="text"
+                name="name"
+                autocomplete="off"
+                class="layui-input"
+              />
+              <input id="material_id" type="hidden" name="material_id" />
             </div>
           </div>
-        </form>
-      </div>
-    </fieldset>
+
+          <div class="layui-inline">
+            <button
+              type="submit"
+              class="layui-btn layui-btn-primary"
+              lay-submit
+              lay-filter="searchBarFilter"
+            >
+              <i class="layui-icon"></i> 搜 索
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </fieldset>
+  <script type="text/html" id="toolbar">
+
+
     <div style="color:#FF5722;">
         <div>
             <p>注意事项:
@@ -74,6 +77,7 @@
       "miniAdmin",
       "tools",
       "request",
+      "tableSelect",
     ],
     function () {
       var $ = layui.jquery,
@@ -82,6 +86,7 @@
         config = layui.conf,
         form = layui.form,
         request = layui.request,
+        tableSelect = layui.tableSelect,
         miniAdmin = layui.miniAdmin;
       var id = tools.param(location.href, "id") || "-1";
 
@@ -195,15 +200,35 @@
 
       form.on("submit(searchBarFilter)", function (data) {
         //执行搜索重载
-        console.log(data);
-        table.reload("currentTableId", {
-          page: {
-            curr: 1,
-          },
-          where: data.field,
-        });
-
+        id = data.field.material_id || "-1";
+        loadTable(id);
         return false;
+      });
+
+      tableSelect.render({
+        elem: "#name", //定义输入框input对象
+        checkedKey: "id", //表格的唯一建值，非常重要，影响到选中状态 必填
+        searchKey: "name", //搜索输入框的name值 默认keyword
+        searchPlaceholder: "关键词搜索", //搜索输入框的提示文字 默认关键词搜索
+        table: {
+          //定义表格参数，与LAYUI的TABLE模块一致，只是无需再定义表格elem
+          url: config.server + "/api/material",
+          headers: config.headers,
+          cols: [
+            [
+              { type: "radio" },
+              { field: "id", title: "编号" },
+              { field: "code", minWidth: 80, title: "代码" },
+              { field: "name", minWidth: 80, title: "物料名称" },
+            ],
+          ],
+        },
+        done: function (elem, data) {
+          //选择完后的回调，包含2个返回值 elem:返回之前input对象；data:表格返回的选中的数据 []
+          //拿到data[]后 就按照业务需求做想做的事情啦~比如加个隐藏域放ID...
+          elem.val(data.data[0].name);
+          $("#material_id").val(data.data[0].id);
+        },
       });
     }
   );
