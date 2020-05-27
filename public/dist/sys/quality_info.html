@@ -1,7 +1,7 @@
 <div class="layuimini-container layuimini-page-anim">
   <script type="text/html" id="toolbar">
 
-    <fieldset class="table-search-fieldset">
+    <fieldset class="table-search-fieldset" id="material">
       <legend>搜索信息</legend>
       <div style="margin: 10px 10px 10px 10px;">
         <form class="layui-form layui-form-pane" action="">
@@ -52,7 +52,7 @@
         </div>
 
     </div>
-    <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 保存</button>
+    <button class="layui-btn layui-btn-sm data-add-btn" lay-event="save"> 保存</button>
   </script>
   <div class="layuimini-main">
     <table
@@ -83,14 +83,17 @@
         form = layui.form,
         request = layui.request,
         miniAdmin = layui.miniAdmin;
-      var id = tools.param(location.href, "id");
-      loadTable(-1);
+      var id = tools.param(location.href, "id") || "-1";
 
+      loadTable(id);
+      if (id != "-1") {
+        $("#material").hide();
+      }
       function loadTable(id) {
         table.render({
           elem: "#currentTableId",
           toolbar: "#toolbar",
-          url: config.server + "/api/quality_info/"+id,
+          url: config.server + "/api/quality_info/" + id,
           headers: config.headers,
           defaultToolbar: [],
           cols: [
@@ -157,7 +160,7 @@
        * toolbar事件监听
        */
       table.on("toolbar(currentTableFilter)", function (obj) {
-        if (obj.event === "add") {
+        if (obj.event === "save") {
           // 监听添加操作
           var cs = table.checkStatus("currentTableId");
           //检查有空的

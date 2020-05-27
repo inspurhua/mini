@@ -14,7 +14,7 @@
             <div class="layui-inline">
               <label class="layui-form-label">类别</label>
               <div class="layui-input-block">
-                <input id="type" name="type" type="text">
+                <input id="type" name="type" type="text" />
               </div>
             </div>
             <div class="layui-inline">
@@ -62,7 +62,8 @@
         <div class="layui-form-item">
           <label class="layui-form-label required">类别</label>
           <div class="layui-input-block">
-            <input type="text" id="type1" name="type_id" lay-filter="type1" lay-verify="required"   lay-reqtext="类别不能为空"   value="{{ d.type_id || '' }}"
+            <input type="text" id="type1" name="type_id" lay-filter="type1"
+            lay-verify="required" lay-reqtext="类别不能为空" value="{{ d.type_id || '' }}"
             class="layui-input">
           </div>
      </div>
@@ -304,7 +305,7 @@
         miniPage = layui.miniPage,
         miniAdmin = layui.miniAdmin;
       loadTable();
-      loadType('#type');
+      loadType("#type");
       function loadTable() {
         table.render({
           elem: "#currentTableId",
@@ -361,59 +362,65 @@
         });
       }
 
-
       function loadType(dom, value) {
         treeSelect.render({
           // 选择器
           elem: dom,
           // 数据
           headers: {
-            token:sessionStorage["token"]
+            token: sessionStorage["token"],
           },
-          data: config.server + "/api/material_type_tree" ,
+          data: config.server + "/api/material_type_tree",
           // 异步加载方式：get/post，默认get
           type: "get",
           // 点击回调
-          click: function(d) {
+          click: function (d) {
             // console.log(d);
           },
+          search:true,
           // 加载完成后的回调函数
-          success: function(d) {
+          success: function (d) {
             // console.log(d);
             //                选中节点，根据id筛选
             value && treeSelect.checkNode("type1", value);
-          }
+          },
         });
       }
-      
 
-      function display() {
-        /**
-         * 上传文件
-         */
-        upload.render({
-          elem: "#btn_process_file", //绑定元素
-          url: config.server + "/api/file",
-          exts: "doc|docx",
-          number: 1,
-          data: { store: "common", about: "material" },
-          headers: {
-            token: sessionStorage["token"],
-          },
+      function display(d) {
+        return function () {
+          /**
+           * 上传文件
+           */
+          upload.render({
+            elem: "#btn_process_file", //绑定元素
+            url: config.server + "/api/file",
+            exts: "doc|docx",
+            number: 1,
+            data: { store: "common", about: "material" },
+            headers: {
+              token: sessionStorage["token"],
+            },
 
-          done: function (res) {
-            //上传完毕回调
-            miniAdmin.success(res.msg);
-            $("#process_file").val(res.data.id);
-            $("#process_file_name")
-              .text(res.data.name)
-              .attr("href", res.data.url);
-          },
-          error: function () {
-            //请求异常回调
-            miniAdmin.error(res.msg);
-          },
-        });
+            done: function (res) {
+              //上传完毕回调
+              miniAdmin.success(res.msg);
+              $("#process_file").val(res.data.id);
+              $("#process_file_name")
+                .text(res.data.name)
+                .attr("href", res.data.url);
+            },
+            error: function () {
+              //请求异常回调
+              miniAdmin.error(res.msg);
+            },
+          });
+
+          /**
+           * 绑定类型
+           */
+          loadType("#type1", d.type_id);
+        };
       }
 
       /**
@@ -445,7 +452,7 @@
             done: function () {
               loadTable();
             },
-            display: display,
+            display: display(),
           });
         }
       });
@@ -459,24 +466,24 @@
             event: "edit",
             titile: "修改",
             url: "/api/material",
-            data: obj.data,
+            data: data,
             done: function () {
               loadTable();
             },
-            display: display,
+            display: display(data),
           });
         } else if (obj.event === "delete") {
           miniCurd({
             event: "delete",
             titile: "删除",
             url: "/api/material",
-            data: obj.data,
+            data: data,
             done: function () {
               loadTable();
             },
           });
         } else if (obj.event == "auth") {
-          tools.open("/sys/quality_info.html?id=" + data.id, "_blank");
+          tools.open("/index.html#/sys/quality_info.html?id=" + data.id, "_blank");
         }
       });
     }

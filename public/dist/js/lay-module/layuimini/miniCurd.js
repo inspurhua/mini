@@ -84,7 +84,7 @@ layui.define(
           content: content
         });
 
-        options.display && options.display();
+        options.display && options.display(data);
 
         $(window).on("resize", function() {
           layer.full(index);
