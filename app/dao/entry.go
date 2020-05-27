@@ -10,6 +10,7 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 		err = db.Model(&bean.EntryTree{}).
 			Where("type=?", 1).
 			Where("kind in (?)", []int{0, 1}).
+			Where("tenant_id in (?)", []int64{0, tenantId}).
 			Order("sort").
 			Find(&result).Error
 	} else {
@@ -20,6 +21,7 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 			err = db.Model(&bean.EntryTree{}).
 				Where("type=?", 1).
 				Where("kind in(?)", []int{0, 2}).
+				Where("tenant_id in (?)", []int64{0, tenantId}).
 				Order("sort").
 				Find(&result).Error
 		} else {
@@ -33,5 +35,11 @@ func Entries(roleId, tenantId int64) (result []*bean.EntryTree, err error) {
 
 func FindEntry(method, href string) (entry bean.Entry, err error) {
 	err = db.Where("method=? and href=?", method, href).First(&entry).Error
+	return
+}
+
+func EntryCreate(e bean.Entry) (result bean.Entry, err error) {
+	result = e
+	err = db.Create(&result).Error
 	return
 }

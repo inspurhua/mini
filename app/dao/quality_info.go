@@ -63,6 +63,9 @@ func QualityInfoUpdate(tenantId, keyId int64, data []bean.QualityInfo) (err erro
 			return
 		}
 	}
+	//检查是否有entry,没有则生成
+
+
 	tx.Commit()
 	return
 }

@@ -54,16 +54,17 @@ SELECT setval('sys_org_id_seq', (select max(id) from sys_org), true);
 drop table if exists sys_entry;
 create table sys_entry
 (
-    id     bigserial primary key,
-    title  text,
-    pid    integer,
-    type   integer      default 1,--1菜单2功能
-    method text,
-    href   text,
-    icon   text,
-    target text         default '_self',
-    sort   int,
-    kind   int not null default 0 --0.common 1.chaoji 2.putong
+    id        bigserial primary key,
+    title     text,
+    pid       integer,
+    type      integer      default 1,--1菜单2功能
+    method    text,
+    href      text,
+    icon      text,
+    target    text         default '_self',
+    sort      int,
+    kind      int not null default 0,--0.common 1.chaoji 2.putong,
+    tenant_id int default 0
 );
 insert into sys_entry
 values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
@@ -120,7 +121,7 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
 
        (2300, '指标管理', 2, 1, '', 'sys/quality_info.html', 'fa fa-thermometer', '_self', 1, 2),
        (2301, '指标列表', 2300, 2, 'GET', '/api/quality_info/:id', '', '', 1, 2),
-       (2303, '编辑指标', 2300, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2)
+       (2303, '编辑指标', 2300, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2),
 ;
 
 

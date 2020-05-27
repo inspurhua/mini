@@ -16,8 +16,8 @@ func AuthList(c *gin.Context) {
 		return
 	}
 	tree := c.DefaultQuery("tree", "0")
-
-	entries, err := dao.AuthList(roleId)
+	TenantId, _ := c.MustGet("TENANT_ID").(int64)
+	entries, err := dao.AuthList(TenantId, roleId)
 	if err != nil {
 		util.AbortNewResultErrorOfServer(c, err)
 		return

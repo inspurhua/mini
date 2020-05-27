@@ -11,14 +11,14 @@ func FindAuth(RoleId, EntryId int64) (auth bean.Auth, err error) {
 	return
 }
 
-func AuthList(RoleId int64) (result []*bean.EntryTree, err error) {
+func AuthList(tenantId, RoleId int64) (result []*bean.EntryTree, err error) {
 	prefix := config.Prefix
 	err = db.Raw(
 		fmt.Sprintf(
-			"select e.*,a.id as auth_id from %ventry e " +
-				"left join %vauth a on e.id = a.entry_id and a.role_id=? " +
-				"where e.kind in(0,2)",
-		prefix, prefix), RoleId).Scan(&result).Error
+			"select e.*,a.id as auth_id from %ventry e "+
+				"left join %vauth a on e.id = a.entry_id and a.role_id=? "+
+				"where e.kind in(0,2) and e.tennantid in (?)",
+			prefix, prefix), RoleId, []int64{0, tenantId}).Scan(&result).Error
 
 	return
 }
