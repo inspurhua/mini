@@ -112,13 +112,13 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
        (2104, '删除物料类别', 2100, 2, 'DELETE', '/api/material_type/:id', '', '', 4, 2),
        (2105, '查看物料类别', 2100, 2, 'GET', '/api/material_type/:id', '', '', 5, 2),
 
-       (2200, '物料', 2, 1, '', 'sys/material.html', 'fa fa-product-hunt', '_self', 1, 2),
+       (2200, '物料管理', 2, 1, '', 'sys/material.html', 'fa fa-product-hunt', '_self', 1, 2),
        (2201, '物料列表', 2200, 2, 'GET', '/api/material', '', '', 1, 2),
        (2202, '添加物料', 2200, 2, 'POST', '/api/material', '', '', 2, 2),
        (2203, '编辑物料', 2200, 2, 'PUT', '/api/material/:id', '', '', 3, 2),
        (2204, '删除物料', 2200, 2, 'DELETE', '/api/material/:id', '', '', 4, 2),
 
-       (2300, '指标', 2, 1, '', 'sys/quality_info.html', 'fa fa-thermometer', '_self', 1, 2),
+       (2300, '指标管理', 2, 1, '', 'sys/quality_info.html', 'fa fa-thermometer', '_self', 1, 2),
        (2301, '指标列表', 2300, 2, 'GET', '/api/quality_info/:id', '', '', 1, 2),
        (2303, '编辑指标', 2300, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2)
 ;
