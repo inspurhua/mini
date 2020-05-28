@@ -109,8 +109,8 @@ func DataList(keyId, tenantId, offset, limit int64) (result []map[string]interfa
 	return
 }
 func DataCreate(d bean.QualityData) (result bean.QualityData, err error) {
-	result = d
 	d.CreateAt = time.Now()
+	result = d
 	err = db.Create(&result).Error
 	return
 }
