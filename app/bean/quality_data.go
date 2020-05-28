@@ -8,7 +8,7 @@ import (
 type QualityData struct {
 	ID     int64  `json:"id" gorm:"primary_key"`
 	KeyId  int64  `json:"key_id" gorm:"key_id"`
-	Batch  string `json:"batch" gorm:"batch"`
+	Batch  string `json:"batch" form:"batch" gorm:"batch"`
 	KeyT00 string `json:"key_t00" form:"key_t00" gorm:"key_t00"`
 	KeyT01 string `json:"key_t01" form:"key_t01" gorm:"key_t01"`
 	KeyT02 string `json:"key_t02" form:"key_t02" gorm:"key_t02"`
