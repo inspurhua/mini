@@ -66,7 +66,7 @@ order by sort
 		if strings.HasPrefix(v.Field, "data_") {
 			fieldType = v.Field[5:6]
 		}
-		resp += fmt.Sprintf(`<div class="layui-form layuimini-form">
+		resp += fmt.Sprintf(`
           <div class="layui-form-item">
               <label class="layui-form-label">%[1]s</label>
               <div class="layui-input-block">
@@ -84,7 +84,7 @@ order by sort
               <div class="layui-input-block">
                   <button class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
               </div>
-          </div></div></div></div>`
+          </div></div></div></script>`
 	return
 }
 func DataList(keyId, tenantId, offset, limit int64) (result []map[string]interface{}, count int, err error) {
