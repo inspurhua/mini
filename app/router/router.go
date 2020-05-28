@@ -31,6 +31,8 @@ func NewRouter() *gin.Engine {
 		_api.GET("/menu", api.Entries)
 		_api.GET("/orgtree", api.OrgTree)
 		_api.GET("/material_type_tree", api.MaterialTypeTree)
+		_api.GET("/col_data/:key_id", api.ColsData)
+		_api.GET("/tmpl_data/:key_id", api.TmplData)
 
 		_auth := _api.Group("")
 		_auth.Use(middleware.Auth())
@@ -79,6 +81,13 @@ func NewRouter() *gin.Engine {
 
 			_auth.GET("/quality_info/:id", api.QualityInfoList)
 			_auth.POST("/quality_info/:id", api.QualityInfoUpdate)
+
+			_auth.GET("/data/:key_id", api.DataList)
+			_auth.POST("/data/:key_id", api.DataCreate)
+			_auth.DELETE("/data/:key_id/:id", api.DataDelete)
+			_auth.PUT("/data/:key_id/:id", api.DataUpdate)
+			_auth.GET("/data/:key_id/:id", api.DataRead)
+
 		}
 	}
 

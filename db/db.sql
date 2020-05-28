@@ -64,7 +64,7 @@ create table sys_entry
     target    text         default '_self',
     sort      int,
     kind      int not null default 0,--0.common 1.chaoji 2.putong,
-    tenant_id int default 0
+    tenant_id int          default 0
 );
 insert into sys_entry
 values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
@@ -123,11 +123,12 @@ values (1, '系统管理', 0, 1, '', '', '', '', 1, 0),
        (2301, '指标列表', 2300, 2, 'GET', '/api/quality_info/:id', '', '', 1, 2),
        (2302, '编辑指标', 2300, 2, 'POST', '/api/quality_info/:id', '', '', 3, 2),
 
-       (2400, '物料管理', 2, 1, '', 'sys/material.html', 'fa fa-product-hunt', '_self', 1, 2),
-       (2401, '物料列表', 2400, 2, 'GET', '/api/material', '', '', 1, 2),
-       (2402, '添加物料', 2400, 2, 'POST', '/api/material', '', '', 2, 2),
-       (2403, '编辑物料', 2400, 2, 'PUT', '/api/material/:id', '', '', 3, 2),
-       (2404, '删除物料', 2400, 2, 'DELETE', '/api/material/:id', '', '', 4, 2)
+       (2400, '数据管理', 2, 1, '', 'sys/data.html', 'fa fa-product-hunt', '_self', 1, 2),
+       (2401, '数据列表', 2400, 2, 'GET', '/api/data/:key_id', '', '', 1, 2),
+       (2402, '添加数据', 2400, 2, 'POST', '/api/data/:key_id', '', '', 2, 2),
+       (2403, '编辑数据', 2400, 2, 'PUT', '/api/data/:key_id/:id', '', '', 3, 2),
+       (2404, '删除数据', 2400, 2, 'DELETE', '/api/data/:key_id/:id', '', '', 4, 2),
+       (2405, '查看数据', 2400, 2, 'GET', '/api/data/:key_id', '', '', 5, 2)
 ;
 
 

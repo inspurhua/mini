@@ -1,0 +1,230 @@
+<div class="layuimini-container layuimini-page-anim">
+  <fieldset class="table-search-fieldset" id="material">
+    <legend>搜索信息</legend>
+    <div style="margin: 10px 10px 10px 10px;">
+      <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">物料名称</label>
+            <div class="layui-input-inline">
+              <input
+                id="name"
+                type="text"
+                name="name"
+                autocomplete="off"
+                class="layui-input"
+              />
+              <input id="material_id" type="hidden" name="material_id" />
+            </div>
+          </div>
+
+          <div class="layui-inline">
+            <button
+              type="submit"
+              class="layui-btn layui-btn-primary"
+              lay-submit
+              lay-filter="searchBarFilter"
+            >
+              <i class="layui-icon"></i> 搜 索
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </fieldset>
+  <script type="text/html" id="toolbar">
+
+
+    <div style="color:#FF5722;">
+        <div>
+
+        </div>
+
+    </div>
+    <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 增加</button>
+  </script>
+  <div class="layuimini-main">
+    <table
+      class="layui-hide"
+      id="currentTableId"
+      lay-filter="currentTableFilter"
+    ></table>
+  </div>
+  <div id="tpl"></div>
+</div>
+
+<script type="text/html" id="currentTableBar">
+  <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+</script>
+<script>
+  layui.use(
+    [
+      "form",
+      "table",
+      "element",
+      "conf",
+      "jquery",
+      "miniAdmin",
+      "tools",
+      "request",
+      "miniCurd",
+      "tableSelect",
+      "laydate",
+    ],
+    function () {
+      var $ = layui.jquery,
+        tools = layui.tools,
+        table = layui.table,
+        config = layui.conf,
+        form = layui.form,
+        request = layui.request,
+        miniCurd = layui.miniCurd,
+        tableSelect = layui.tableSelect,
+        miniAdmin = layui.miniAdmin;
+      var laydate = layui.laydate;
+      var id = tools.param(location.href, "id") || "-1";
+
+      if (id != "-1") {
+        $("#material").hide();
+      }
+
+      function loadTable(id, colData) {
+        table.render({
+          elem: "#currentTableId",
+          toolbar: "#toolbar",
+          url: config.server + "/api/data/" + id,
+          headers: config.headers,
+          defaultToolbar: [],
+          cols: [colData],
+          limit: 20,
+          page: true,
+          done: function (d) {},
+        });
+      }
+
+      function display() {
+        laydate.render({
+          elem: "input[name=qc_date]", //指定元素,
+          type: "date",
+          trigger: "click"
+        });
+      }
+      async function reload() {
+        let id =
+          $("#material_id").val() || tools.param(location.href, "id") || "-1";
+        $.ajax({
+          url: config.server + "/api/tmpl_data/" + id,
+          headers: config.headers,
+          type: "get",
+          success: function (d) {
+            $("#tpl").append(d);
+          },
+          error: function (e) {
+            console.log(e);
+          },
+        });
+        //加载后台构造json数据
+
+        let d = await request(config.server + "/api/col_data/" + id, "get");
+        d.data.push({
+          title: "操作",
+          minWidth: 120,
+          templet: "#currentTableBar",
+          fixed: "right",
+          align: "center",
+        });
+        cols = d.data;
+        //执行搜索重载
+
+        await loadTable(id, cols);
+      }
+      /**
+       * 监听搜索操作
+       */
+
+      form.on("submit(searchBarFilter)", async function (data) {
+        await reload();
+        return false;
+      });
+
+      tableSelect.render({
+        elem: "#name", //定义输入框input对象
+        checkedKey: "id", //表格的唯一建值，非常重要，影响到选中状态 必填
+        searchKey: "name", //搜索输入框的name值 默认keyword
+        searchPlaceholder: "关键词搜索", //搜索输入框的提示文字 默认关键词搜索
+        table: {
+          //定义表格参数，与LAYUI的TABLE模块一致，只是无需再定义表格elem
+          url: config.server + "/api/material",
+          headers: config.headers,
+          cols: [
+            [
+              { type: "radio" },
+              { field: "id", title: "编号" },
+              { field: "code", minWidth: 80, title: "代码" },
+              { field: "name", minWidth: 80, title: "物料名称" },
+            ],
+          ],
+        },
+        done: function (elem, data) {
+          //选择完后的回调，包含2个返回值 elem:返回之前input对象；data:表格返回的选中的数据 []
+          //拿到data[]后 就按照业务需求做想做的事情啦~比如加个隐藏域放ID...
+          elem.val(data.data[0].name);
+          $("#material_id").val(data.data[0].id);
+        },
+      });
+
+      /**
+       * toolbar事件监听
+       */
+      table.on("toolbar(currentTableFilter)", function (obj) {
+        if (obj.event === "add") {
+          let id =
+            $("#material_id").val() || tools.param(location.href, "id") || "-1";
+          if (+id > 0) {
+            // 监听添加操作
+            miniCurd({
+              event: "add",
+              titile: "添加",
+              url: "/api/data/" + id,
+              data: {},
+              display:display,
+              done: function () {
+                reload();
+              },
+            });
+          }
+        }
+      });
+
+      /**
+       * tool事件监听
+       */
+      table.on("tool(currentTableFilter)", function (obj) {
+        var data = obj.data;
+        if (obj.event === "edit") {
+          miniCurd({
+            event: "edit",
+            titile: "修改",
+            url: "/api/data/" + id,
+            data: data,
+            display:display,
+            done: function () {
+              reload();
+            },
+          });
+        } else if (obj.event === "delete") {
+          miniCurd({
+            event: "delete",
+            titile: "删除",
+            url: "/api/data/" + id,
+            data: data,
+            done: function () {
+              reload();
+            },
+          });
+        }
+      });
+    }
+  );
+</script>

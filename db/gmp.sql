@@ -117,7 +117,8 @@ create table sys_quality
     data_n17  numeric,
     data_n18  numeric,
     data_n19  numeric,
-    qc_date   date,--质检日期
+    qc_date   text,--质检日期
+    create_by int,
     create_at timestamp without time zone default localtimestamp(0),
     tenant_id int not null
 );
