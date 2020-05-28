@@ -107,44 +107,43 @@
         laydate.render({
           elem: "input[name=qc_date]", //指定元素,
           type: "date",
-          trigger: "click"
+          trigger: "click",
         });
       }
-      async function reload() {
+
+      function reload() {
         let id =
           $("#material_id").val() || tools.param(location.href, "id") || "-1";
         $.ajax({
           url: config.server + "/api/tmpl_data/" + id,
           headers: config.headers,
           type: "get",
-          success: function (d) {
-            $("#tpl").append(d);
-          },
-          error: function (e) {
-            console.log(e);
-          },
+        }).then(function (d) {
+          $("#tpl").append(d);
         });
         //加载后台构造json数据
+        request(config.server + "/api/col_data/" + id, "get").then(function (
+          d
+        ) {
+          d.data.push({
+            title: "操作",
+            minWidth: 120,
+            templet: "#currentTableBar",
+            fixed: "right",
+            align: "center",
+          });
+          cols = d.data;
+          //执行搜索重载
 
-        let d = await request(config.server + "/api/col_data/" + id, "get");
-        d.data.push({
-          title: "操作",
-          minWidth: 120,
-          templet: "#currentTableBar",
-          fixed: "right",
-          align: "center",
+          loadTable(id, cols);
         });
-        cols = d.data;
-        //执行搜索重载
-
-        await loadTable(id, cols);
       }
       /**
        * 监听搜索操作
        */
 
-      form.on("submit(searchBarFilter)", async function (data) {
-        await reload();
+      form.on("submit(searchBarFilter)", function (data) {
+        reload();
         return false;
       });
 
@@ -188,7 +187,7 @@
               titile: "添加",
               url: "/api/data/" + id,
               data: {},
-              display:display,
+              display: display,
               done: function () {
                 reload();
               },
@@ -208,7 +207,7 @@
             titile: "修改",
             url: "/api/data/" + id,
             data: data,
-            display:display,
+            display: display,
             done: function () {
               reload();
             },

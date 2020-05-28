@@ -60,7 +60,12 @@ order by sort
 		},
 	}, r...)
 
+	fieldType := "t"
+
 	for _, v := range r {
+		if strings.HasPrefix(v.Field, "data_") {
+			fieldType = v.Field[5:6]
+		}
 		resp += fmt.Sprintf(`<div class="layui-form layuimini-form">
           <div class="layui-form-item">
               <label class="layui-form-label">%[1]s</label>
@@ -68,8 +73,9 @@ order by sort
                   <input type="text" name="%[2]s" placeholder="请输入%[1]s"
                          value="{{ d.%[2]s || '' }}"
                          class="layui-input">
+  <tip>{{ ('i'=='%[3]s'||'n'=='%[3]s')  ? '数字类型':'' }}</tip>
               </div>
-          </div>`, v.Title, v.Field)
+          </div>`, v.Title, v.Field, fieldType)
 	}
 
 	resp = `<script type="text/html" id="tpl_curd">
