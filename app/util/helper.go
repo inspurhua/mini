@@ -2,8 +2,13 @@ package util
 
 import (
 	"crypto/md5"
+	"database/sql"
+	"errors"
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"huage.tech/mini/app/bean"
+	"io/ioutil"
+	"path/filepath"
 	"reflect"
 	"strconv"
 )
@@ -83,4 +88,52 @@ func Md5(str string) string {
 	has := md5.Sum(data)
 	md5str := fmt.Sprintf("%x", has)
 	return md5str
+}
+
+func GetRows(rows *sql.Rows) (result []map[string]interface{}, err error) {
+	result = make([]map[string]interface{}, 0)
+	columns, err := rows.Columns()
+
+	for rows.Next() {
+		values := make([]interface{}, len(columns))
+		for i := range values {
+			values[i] = new(interface{})
+		}
+
+		err = rows.Scan(values...)
+		if err != nil {
+			return
+		}
+		dest := make(map[string]interface{})
+		for i, column := range columns {
+			dest[column] = *(values[i].(*interface{}))
+		}
+		result = append(result, dest)
+	}
+	return
+}
+func GetRow(rows *sql.Rows) (result map[string]interface{}, err error) {
+	r, err := GetRows(rows)
+	if err != nil {
+		return
+	}
+	if len(r) < 1 {
+		err = errors.New("没有记录")
+		return
+	}
+	result = r[0]
+	return
+}
+
+func LoadFile(db *gorm.DB, path string) (err error) {
+	realpath, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	contents, err := ioutil.ReadFile(realpath)
+	if err != nil {
+		return err
+	}
+	err = db.Exec(string(contents)).Error
+	return
 }
