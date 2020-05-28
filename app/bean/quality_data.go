@@ -2,7 +2,6 @@ package bean
 
 import (
 	"huage.tech/mini/app/config"
-	"time"
 )
 
 type QualityData struct {
@@ -78,10 +77,10 @@ type QualityData struct {
 	DataN18 float64 `json:"data_n18" form:"data_n18" gorm:"data_n18"`
 	DataN19 float64 `json:"data_n19" form:"data_n19" gorm:"data_n19"`
 
-	QcDate   string    `json:"qc_date" form:"qc_date" gorm:"qc_date"`
-	CreateAt time.Time `json:"create_at" form:"-" gorm:"create_at"`
-	CreateBy int64     `json:"create_by" form:"-" gorm:"create_by"`
-	TenantId int64     `json:"tenant_id" form:"-" gorm:"tenant_id"`
+	QcDate   string `json:"qc_date" form:"qc_date" gorm:"qc_date"`
+	CreateAt string `json:"create_at" form:"-" gorm:"create_at"`
+	CreateBy int64  `json:"create_by" form:"-" gorm:"create_by"`
+	TenantId int64  `json:"tenant_id" form:"-" gorm:"tenant_id"`
 }
 
 func (QualityData) TableName() string {
