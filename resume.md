@@ -1,4 +1,4 @@
-
+### 简历──张华
 
 ---
 
@@ -26,7 +26,16 @@
 # 工作经历
 ## 北京博万数策科技有限公司 （ 2014.11 ~ 今 ）
 
-### 爱调研项目 
+### 进口大众售后运营分析平台项目 
+
+​		每月接收3个千万级数据，虽然入库过程中已经通过提前运算生成了部分中间结果，但仍然缓慢，部分报表需要半小时才能出来。并发查询多的时候服务器资源消耗殆尽。该项目经历以下阶段解决效率问题：
+
+1. 分析耗时sql，优化数据库参数（vacuum/index/postgresql.conf）
+2. 数据库PostgreSQL独立部署
+3. 引入redis队列，大报表查询结果缓存并异步返回
+4. 数据无缝迁移到Greenplum MPP数据库，HTAP，所有报表秒出
+
+### 问卷调研项目 
 
 - 跟公司业务人员交流，完成系统需求分析和系统设计
 - 后台使用自己开源的基于php开发bwf开发框架实现
@@ -69,7 +78,7 @@
 
 # 开源项目和作品
  - [bwf framework](https://gitee.com/inspurhua/bwf):使用php开发的后台开发框架，内置组织、用户、角色、权限和完整前端UI
- - [mini framework](https://github.com/inspurhua/mini):使用golang开发的多租户后台开发框架，内置组织、用户、角色、权限和完整前端UI
+ - [mini framework](https://github.com/inspurhua/mini):使用golang开发的多租户后台开发框架，内置租户、组织、用户、角色、权限和完整前端UI
  - [call center](https://gitee.com/inspurhua/eventsocket):基于freeswitch平台的开源呼叫中心系统，开发语言php、java、lua
 
 # 技能清单
@@ -77,17 +86,11 @@
 - Web框架：thinkphp/swoole/go-gin/expressjs
 - 前端框架：Bootstrap/Jquery/Vue/HTML5/CSS3/Uni-app
 - 前端工具：SaSS/LeSS/Webpack
-- 数据库相关：MySQL/PostgreSQL/SQLite/...
+- 数据库相关：PostgreSQL/SQLite/MySQL...
 - 版本管理和持续集成：Svn/Git/Shell
+- 消息队列：redis/kafaka
+- 自动化测试：Postman/Jmeter
+- 负载均衡：LVS/Nginx
 - 开放平台：微信应用开发，腾讯云Serverless，七牛云存储
 - 操作系统：Linux为主，windows为辅、开发环境Ubuntu，正式环境CentOS6.x/CentOS7.x
 
----
-
-# 我的常用工具选型
-- 负载均衡LVS/nginx
-- 缓存redis
-- 消息队列 redis、kafka
-- 测试工具Postman/Jmeter
-- 文档markdown
-- 监控系统Zabbix
