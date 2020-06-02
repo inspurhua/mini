@@ -11,6 +11,8 @@ type configMap struct {
 }
 
 func (c *configMap) GetConfig(key string) (data string) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	if value, ok := c.data[key]; ok {
 		data = value
 	}
