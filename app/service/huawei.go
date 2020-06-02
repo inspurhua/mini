@@ -54,7 +54,7 @@ type HwCommand struct {
 	Paras       map[string]string `json:"paras"`
 }
 type HwCommandResponse struct {
-	ResultCode   int            `json:"result_code"`
+	ResultCode   int               `json:"result_code"`
 	ResponseName string            `json:"response_name"`
 	Paras        map[string]string `json:"paras"`
 }
@@ -64,12 +64,12 @@ type HwCommandResult struct {
 }
 
 func HwToken() (token string, err error) {
-	expire := GetConfig("HwExpireAt")
+	expire := GetConfigMap().GetConfig("HwExpireAt")
 	ex, err := time.Parse("2006-01-02 15:04:05", expire)
 	sh, _ := time.LoadLocation("Asia/Shanghai")
 	now := time.Now().In(sh)
 	if ex.Sub(now) > 10*time.Minute {
-		token = GetConfig("HwToken")
+		token = GetConfigMap().GetConfig("HwToken")
 		return
 	}
 
@@ -111,16 +111,16 @@ func HwToken() (token string, err error) {
 	}
 
 	token = resp.Header().Get("X-Subject-Token")
-	SetConfig("HwToken", token)
-	SetConfig("HwProjectId", resOK.Token.Project.Id)
-	SetConfig("HwExpireAt", resOK.Token.ExpiresAt.Format("2006-01-02 15:04:05"))
+	GetConfigMap().SetConfig("HwToken", token)
+	GetConfigMap().SetConfig("HwProjectId", resOK.Token.Project.Id)
+	GetConfigMap().SetConfig("HwExpireAt", resOK.Token.ExpiresAt.Format("2006-01-02 15:04:05"))
 
 	return
 }
 func GetProducts(offset, limit int64) (devices []SimpleDevice, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := GetConfig("HwProjectId")
+	project := GetConfigMap().GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -143,7 +143,7 @@ func GetProducts(offset, limit int64) (devices []SimpleDevice, err error) {
 func GetDevices(offset, limit int64) (devices []SimpleDevice, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := GetConfig("HwProjectId")
+	project := GetConfigMap().GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -167,7 +167,7 @@ func GetDevices(offset, limit int64) (devices []SimpleDevice, err error) {
 func GetProductInfo(device_id string) (result string, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := GetConfig("HwProjectId")
+	project := GetConfigMap().GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return
@@ -186,7 +186,7 @@ func GetProductInfo(device_id string) (result string, err error) {
 func SendDeviceCommand(device_id string, cmd HwCommand) (result HwCommandResult, err error) {
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	project := GetConfig("HwProjectId")
+	project := GetConfigMap().GetConfig("HwProjectId")
 	token, err := HwToken()
 	if err != nil {
 		return

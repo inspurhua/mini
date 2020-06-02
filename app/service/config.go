@@ -5,27 +5,23 @@ import (
 	"sync"
 )
 
-type Config struct {
-	Data map[string]string
-	Lock sync.RWMutex
+type configMap struct {
+	data map[string]string
+	lock sync.RWMutex
 }
 
-var conf = Config{
-	Data: make(map[string]string),
-}
-
-func GetConfig(key string) (data string) {
-	if value, ok := conf.Data[key]; ok {
+func (c *configMap) GetConfig(key string) (data string) {
+	if value, ok := c.data[key]; ok {
 		data = value
 	}
 	return
 }
 
-func SetConfig(key, data string) (c bean.Config, err error) {
-	conf.Lock.Lock()
-	defer conf.Lock.Unlock()
-	conf.Data[key] = data
-	c = bean.Config{
+func (c *configMap) SetConfig(key, data string) (ret bean.Config, err error) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.data[key] = data
+	ret = bean.Config{
 		ID:   101,
 		Key:  key,
 		Data: data,
